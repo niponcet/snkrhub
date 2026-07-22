@@ -1,14 +1,3 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
-
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 
@@ -18,31 +7,99 @@
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
+/* Optional CSS utils */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+/* Theme Variables */
+@import "./theme/variables.scss";
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* Reset & Typography Base */
+body {
+  font-family: var(--font-body);
+  background-color: var(--ink);
+  color: var(--ink-90);
+}
 
-/* Estilos globales */
+.font-display {
+  font-family: var(--font-display);
+}
 
-/* src/global.scss */
+.font-mono {
+  font-family: var(--font-mono);
+}
 
-/* Estilos para ion-tab-bar */
-ion-tab-bar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* ---- Componentes Recurrentes SnkrHub ---- */
+
+/* 1. Divisor Ticket Perforado */
+.divider-ticket {
+  height: 16px;
+  margin: 0 20px;
+  background: repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px);
+  opacity: 0.6;
+}
+
+/* 2. Barcode Signature */
+.barcode {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+
+  span, rect {
+    display: block;
+    fill: currentColor;
   }
-  
+}
+
+/* 3. Chips */
+.chip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  color: var(--ink-60);
+  text-transform: uppercase;
+  background: transparent;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #1a0a02;
+    font-weight: 700;
+  }
+}
+
+/* 4. Tarjetas (Cards) */
+.snkr-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* 5. Estilos globales Ionic Tab Bar */
+ion-tab-bar {
+  --background: var(--ink);
+  --border-color: var(--line);
+  border-top: 1px solid var(--line);
+}
+
+ion-tab-button {
+  --color: var(--ink-40);
+  --color-selected: var(--orange);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}

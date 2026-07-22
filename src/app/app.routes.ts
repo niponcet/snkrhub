@@ -11,6 +11,18 @@ export const routes: Routes = [
     loadComponent: () => import('./features/home/home.page').then(m => m.HomePage),
   },
   {
+    path: 'catalog',
+    loadComponent: () => import('./features/catalog/catalog.page').then(m => m.CatalogPage),
+  },
+  {
+    path: 'database',
+    loadComponent: () => import('./features/database/database.page').then(m => m.DatabasePage),
+  },
+  {
+    path: 'inventory',
+    loadComponent: () => import('./features/inventory/inventory.page').then(m => m.InventoryPage),
+  },
+  {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login.page').then(m => m.LoginPage),
   },
@@ -19,20 +31,8 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/registro/registro.page').then(m => m.RegistroPage),
   },
   {
-    path: 'catalog',
-    loadComponent: () => import('./features/catalog/catalog.page').then(m => m.CatalogPage),
-  },
-  {
-    path: 'favorite',
-    loadComponent: () => import('./features/favorite/favorite.page').then(m => m.FavoritePage),
-  },
-  {
     path: 'profile',
     loadComponent: () => import('./features/profile/profile.page').then(m => m.ProfilePage),
-  },
-  {
-    path: 'inventory',
-    loadComponent: () => import('./features/inventory/inventory.page').then(m => m.InventoryPage),
   },
   {
     path: 'notifications',

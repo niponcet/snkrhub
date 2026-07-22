@@ -1,0 +1,22 @@
+ion-app {
+  display: flex;
+  flex-direction: column;
+  background: var(--ink);
+  color: var(--ink-90);
+}
+
+.global-app-header {
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+ion-router-outlet {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.global-app-footer {
+  flex-shrink: 0;
+  z-index: 100;
+}

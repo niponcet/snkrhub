@@ -1,27 +1,41 @@
-// For information on how to create your own theme, please see:
-// http://ionicframework.com/docs/theming/
-/* Temas claros */
-/* Temas claros */
+/**
+ * SnkrHub — Design Tokens & Variables
+ */
+
 :root {
-    --ion-color-primary: #3880ff;
-    --ion-color-primary-rgb: 56,128,255;
-    --ion-color-primary-contrast: #ffffff;
-    --ion-color-primary-contrast-rgb: 255,255,255;
-    --ion-color-primary-shade: #3171e0;
-    --ion-color-primary-tint: #4c8dff;
-  
-    --background-color: #ffffff;
-    --text-color: #000000;
-  }
-  
-  /* Temas oscuros */
-  :root[theme='dark'] {
-    --ion-color-primary: #4d89f9;
-    --ion-color-primary-rgb: 77,137,249;
-    --ion-color-primary-contrast: #ffffff;
+  /* Design Tokens — SnkrHub Palette */
+  --ink: #131316;        /* fondo base, negro cálido tipo "caja de zapatilla" */
+  --panel: #1c1c21;       /* superficie de tarjetas */
+  --panel-2: #232329;     /* superficie secundaria, botones */
+  --paper: #ede6d6;       /* texto de alto contraste / números grandes */
+
+  --orange: #ff5a1f;      /* acento primario — CTAs, tabs activos, tags */
+  --gain: #3ecf8e;        /* valores al alza */
+  --loss: #ff4d5e;        /* valores a la baja */
+
+  --ink-90: rgba(237, 230, 214, 0.92);
+  --ink-60: rgba(237, 230, 214, 0.58);
+  --ink-40: rgba(237, 230, 214, 0.34);
+  --line: rgba(237, 230, 214, 0.10);
+
+  /* Ionic Custom Overrides mapping to SnkrHub Tokens */
+  --ion-color-primary: #ff5a1f;
+  --ion-color-primary-rgb: 255, 90, 31;
+  --ion-color-primary-contrast: #1a0a02;
+  --ion-color-primary-contrast-rgb: 26, 10, 2;
+  --ion-color-primary-shade: #e04f1b;
+  --ion-color-primary-tint: #ff6b35;
+
+  --ion-background-color: var(--ink);
+  --ion-text-color: var(--ink-90);
+  --ion-item-background: var(--panel);
+  --ion-card-background: var(--panel);
+  --ion-toolbar-background: var(--ink);
+  --ion-tab-bar-background: var(--ink);
+  --ion-border-color: var(--line);
+
+  /* Tipografías Globales */
+  --font-display: 'Archivo Black', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-body: 'Inter', sans-serif;
 }
-
-/* Cambiar el color de fondo del botón activo */
-
-/* Estilos globales */
-

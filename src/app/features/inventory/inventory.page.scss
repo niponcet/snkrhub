@@ -1,0 +1,86 @@
+@import "../../../theme/variables.scss";
+
+.snkrhub-content { --background: var(--ink); --color: var(--ink-90); }
+.screen-container { padding-bottom: 32px; }
+
+.inv-hero {
+  margin: 16px 20px 4px; padding: 18px; border-radius: 16px; position: relative;
+  overflow: hidden; background: var(--panel); border: 1px solid var(--line);
+  .bg-barcode { position: absolute; right: -6px; top: 0; bottom: 0; width: 90px; opacity: .25; color: var(--orange); }
+  .lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; color: var(--ink-40); text-transform: uppercase; }
+  .val { font-family: var(--font-display); font-size: 30px; color: var(--paper); margin: 4px 0 6px; }
+  .delta { font-family: var(--font-mono); font-size: 11.5px; color: var(--gain); }
+}
+
+.inv-tabs { display: flex; gap: 8px; padding: 14px 20px 6px; }
+
+.inv-tab {
+  font-family: var(--font-mono); font-size: 10.5px; padding: 6px 14px; border-radius: 20px;
+  border: 1px solid var(--line); color: var(--ink-60); cursor: pointer; transition: all .2s;
+  &.active { background: var(--paper); color: #171712; border-color: var(--paper); font-weight: 700; }
+}
+
+.inv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 8px 20px 20px; }
+
+.inv-card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  cursor: pointer; transition: transform .15s, border-color .2s;
+  &:hover { border-color: rgba(237, 230, 214, .25); }
+}
+
+.inv-thumb {
+  height: 88px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;
+  .shoe-icon { width: 100%; height: 100%; padding: 10px; }
+}
+
+.heart {
+  position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(0, 0, 0, .4); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform .15s;
+  &:hover { transform: scale(1.15); }
+  &.on svg { fill: var(--orange); stroke: var(--orange); }
+}
+
+.inv-info {
+  padding: 10px 10px 12px;
+  h5 { font-size: 12px; font-weight: 600; margin: 0 0 1px; color: var(--ink-90); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .size { font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-40); margin-bottom: 6px; }
+  .pl { display: flex; justify-content: space-between; align-items: baseline; }
+  .now { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--paper); }
+  .pct { font-family: var(--font-mono); font-size: 9.5px; }
+}
+
+.empty-state {
+  padding: 40px 20px; text-align: center; color: var(--ink-40); font-family: var(--font-mono); font-size: 12px;
+  .add-btn { margin-top: 12px; background: var(--orange); color: #1a0a02; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; font-family: var(--font-mono); }
+}
+
+/* FAB exactamente de la referencia snkrhub-add-pair-modal.html */
+.fab {
+  position: fixed;
+  right: 20px;
+  bottom: 84px;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px -6px rgba(255, 90, 31, .55);
+  z-index: 40;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 14px 28px -4px rgba(255, 90, 31, .65);
+  }
+  &:active {
+    transform: scale(0.96);
+  }
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}

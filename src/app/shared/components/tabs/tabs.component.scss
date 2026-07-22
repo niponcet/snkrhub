@@ -1,8 +1,52 @@
-ion-tab-button {
-    color: #767677; /* Color predeterminado de los tabs */
-  
-    &.tab-selected {
-      color: #7044FF; /* Color cuando el tab está seleccionado */
+@import "../../../../theme/variables.scss";
+
+.navbar {
+  display: flex;
+  border-top: 1px solid var(--line);
+  background: var(--ink);
+  padding: 10px 8px 16px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--ink-40);
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  span {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &.active {
+    color: var(--orange);
+
+    .nav-tick {
+      opacity: 1;
     }
   }
-  
+
+  &:hover:not(.active) {
+    color: var(--ink-60);
+  }
+}
+
+.nav-tick {
+  width: 14px;
+  height: 2px;
+  background: var(--orange);
+  border-radius: 2px;
+  margin-top: 1px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}

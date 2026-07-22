@@ -1,116 +1,87 @@
-<ion-header>
-  <ion-toolbar color="dark">
-    <ion-buttons slot="end">
-      <ion-button (click)="scanSneaker()" color="tertiary">
-        <ion-icon size="large" name="camera"></ion-icon>
-      </ion-button>
-      <ion-button [routerLink]="['/notifications']">
-        <ion-icon size="mid" color="tertiary" name="notifications-outline"></ion-icon>
-      </ion-button>
-      <ion-button [routerLink]="['/profile']">
-        <ion-icon size="mid" color="tertiary" name="person-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Inventario ({{ totalSneakers() }})</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="snkrhub-content">
+  <div class="screen-container">
+    <div class="inv-hero">
+      <svg class="bg-barcode" viewBox="0 0 60 90" preserveAspectRatio="none">
+        <g fill="currentColor">
+          <rect x="0" width="2" height="90" />
+          <rect x="4" width="1" height="90" />
+          <rect x="8" width="3" height="90" />
+          <rect x="14" width="1" height="90" />
+          <rect x="18" width="2" height="90" />
+          <rect x="23" width="1" height="90" />
+          <rect x="27" width="3" height="90" />
+          <rect x="33" width="1" height="90" />
+          <rect x="37" width="2" height="90" />
+          <rect x="42" width="1" height="90" />
+          <rect x="46" width="3" height="90" />
+          <rect x="52" width="1" height="90" />
+          <rect x="56" width="2" height="90" />
+        </g>
+      </svg>
+      <div class="lbl">Valor total de la colección</div>
+      <div class="val">CLP {{ totalCollectionValue() | number:'1.0-0' }}</div>
+      <div class="delta">↑ +6,2% este mes · {{ totalSneakers() }} pares</div>
+    </div>
 
-<ion-content color="dark" class="ion-padding">
-  <!-- Tarjeta Destacada de Valor Total de la Colección -->
-  <ion-card color="tertiary" class="dashboard-card" style="margin-bottom: 1rem;">
-    <ion-card-header>
-      <ion-card-subtitle style="color: #e0e0e0;">VALOR TOTAL DE LA COLECCIÓN</ion-card-subtitle>
-      <ion-card-title style="font-size: 1.8rem; font-weight: bold; color: #ffffff;">
-        ${{ totalCollectionValue() | number:'1.0-2' }} USD
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content style="color: #f0f0f0;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span>Zapatillas registradas: <strong>{{ totalSneakers() }}</strong></span>
-        <span>Promedio: <strong>${{ (totalSneakers() > 0 ? totalCollectionValue() / totalSneakers() : 0) | number:'1.0-0' }} USD</strong></span>
+    <div class="inv-tabs">
+      <div class="inv-tab" [ngClass]="{'active': activeTab() === 'all'}" (click)="setTab('all')">
+        Todos ({{ totalSneakers() }})
       </div>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- Barra de Búsqueda Reactiva -->
-  <ion-searchbar 
-    placeholder="Buscar zapatilla por modelo, marca o descripción..." 
-    [value]="searchTerm()" 
-    (ionInput)="onSearchChange($event)" 
-    color="light" 
-    animated="true"
-    style="margin-bottom: 0.5rem;"
-  ></ion-searchbar>
-
-  <!-- Filtro por Marcas (Segmento Scrollable) -->
-  <ion-segment 
-    [value]="brandFilter()" 
-    (ionChange)="onBrandChange($event)" 
-    scrollable="true" 
-    color="tertiary"
-    style="margin-bottom: 1rem;"
-  >
-    @for (brand of availableBrands(); track brand) {
-      <ion-segment-button [value]="brand">
-        <ion-label>{{ brand }}</ion-label>
-      </ion-segment-button>
-    }
-  </ion-segment>
-
-  <!-- Contenido de Inventario y Tarjetas -->
-  @if (sneakers().length === 0) {
-    <div class="empty-state ion-text-center ion-padding" style="margin-top: 2rem;">
-      <ion-icon name="barcode-outline" style="font-size: 80px; color: #888;"></ion-icon>
-      <h3>Tu inventario está vacío</h3>
-      <p>Escanea el código de barras de la caja de tus zapatillas para agregarlas a tu colección.</p>
-      <ion-button color="tertiary" shape="round" (click)="scanSneaker()">
-        <ion-icon name="camera" slot="start"></ion-icon>
-        Escanear Zapatilla
-      </ion-button>
+      <div class="inv-tab" [ngClass]="{'active': activeTab() === 'favorites'}" (click)="setTab('favorites')">
+        Favoritos ({{ favoritesCount() }})
+      </div>
     </div>
-  } @else if (filteredSneakers().length === 0) {
-    <div class="empty-state ion-text-center ion-padding" style="margin-top: 2rem;">
-      <ion-icon name="search-outline" style="font-size: 60px; color: #888;"></ion-icon>
-      <h3>No se encontraron coincidencias</h3>
-      <p>No hay zapatillas que coincidan con "{{ searchTerm() }}" en la categoría "{{ brandFilter() }}".</p>
-    </div>
-  } @else {
-    <ion-grid>
-      <ion-row>
-        @for (sneaker of filteredSneakers(); track sneaker.id) {
-          <ion-col size="12" size-md="6" size-lg="4">
-            <ion-card color="medium" class="sneaker-card">
-              <ion-card-header>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <ion-badge color="tertiary">{{ sneaker.brand || sneaker.marca || 'Marca' }}</ion-badge>
-                  <ion-badge color="success">${{ sneaker.marketValue || sneaker.precio || 0 }} USD</ion-badge>
-                </div>
-                <ion-card-title style="margin-top: 8px;">{{ sneaker.model || sneaker.modelo }}</ion-card-title>
-                @if (sneaker.size) {
-                  <ion-card-subtitle>Talle: US {{ sneaker.size }}</ion-card-subtitle>
+
+    @if (filteredInventory().length === 0) {
+      <div class="empty-state">
+        <p>No tienes zapatillas en esta vista.</p>
+        <button class="add-btn" (click)="openAddPairModal()">+ Agregar Par</button>
+      </div>
+    } @else {
+      <div class="inv-grid">
+        @for (sneaker of filteredInventory(); track sneaker.id) {
+          <div class="inv-card" (click)="presentEditAlert(sneaker)">
+            <div class="inv-thumb" [style.background]="'#2b2b32'">
+              <svg class="shoe-icon" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.85">
+                <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13 3-4 7-6 12-6 3 0 5 2 5 5 0 4 3 7 8 8l20 5c6 2 13 5 13 12 0 4-3 6-7 6H10c-3 0-5-2-5-6z" fill="rgba(255,255,255,0.9)"/>
+                <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13" stroke="rgba(0,0,0,0.15)" stroke-width="2" fill="none"/>
+                <circle cx="30" cy="24" r="1.6" fill="rgba(0,0,0,.25)"/>
+                <circle cx="36" cy="20" r="1.6" fill="rgba(0,0,0,.25)"/>
+                <circle cx="42" cy="17" r="1.6" fill="rgba(0,0,0,.25)"/>
+              </svg>
+              <div class="heart" [ngClass]="{'on': sneaker.isFavorite}" (click)="toggleFavorite(sneaker, $event)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+                  <path d="M12 21s-7-4.5-9.5-9C1 8 2.5 4.5 6 4c2-.3 4 .8 6 3 2-2.2 4-3.3 6-3 3.5.5 5 4 3.5 8-2.5 4.5-9.5 9-9.5 9z" />
+                </svg>
+              </div>
+            </div>
+            <div class="inv-info">
+              <h5>{{ sneaker.model || sneaker.modelo }}</h5>
+              <div class="size">US {{ sneaker.size || 9.5 }} · {{ sneaker.condition || 'DS' }}</div>
+              <div class="pl">
+                <span class="now">CLP {{ (sneaker.marketValue || sneaker.precio || 0) | number:'1.0-0' }}</span>
+                @if (sneaker.priceChangePercentage && sneaker.priceChangePercentage !== 0) {
+                  <span class="pct" [style.color]="sneaker.priceChangePercentage > 0 ? 'var(--gain)' : 'var(--loss)'">
+                    {{ sneaker.priceChangePercentage > 0 ? '+' : '' }}{{ sneaker.priceChangePercentage }}%
+                  </span>
+                } @else {
+                  <span class="pct" style="color: var(--gain);">+10%</span>
                 }
-              </ion-card-header>
-
-              <ion-card-content>
-                <p>{{ sneaker.description || sneaker.descripcion || 'Sin descripción' }}</p>
-                
-                <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
-                  <ion-button color="danger" fill="clear" size="small" (click)="deleteSneaker(sneaker)">
-                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
-                  </ion-button>
-                </div>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
+              </div>
+            </div>
+          </div>
         }
-      </ion-row>
-    </ion-grid>
-  }
+      </div>
+    }
 
-  <!-- Botón Flotante (FAB) para Escaneo Rápido -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="tertiary" (click)="scanSneaker()">
-      <ion-icon name="camera"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+    <!-- FAB según referencia snkrhub-add-pair-modal.html -->
+    <button class="fab" (click)="openAddPairModal()" title="Agregar par">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1a0a02" stroke-width="2.4" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+    </button>
+
+    <!-- Modal de Agregar Par -->
+    <app-add-pair-modal #addPairModal (pairAdded)="onPairAdded()"></app-add-pair-modal>
+  </div>
 </ion-content>

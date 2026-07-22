@@ -1,12 +1,155 @@
-.image-container {
+@import "../../../theme/variables.scss";
+
+.snkrhub-content {
+  --background: var(--ink);
+  --color: var(--ink-90);
+}
+
+.screen-container {
+  padding-bottom: 24px;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--orange);
+  padding: 18px 20px 8px;
+}
+
+.carousel {
+  position: relative;
+  margin: 0 20px;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 190px;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  height: 90vh; /* Ocupa toda la altura de la ventana */
-  overflow: hidden; /* Evita el scroll vertical */
+  justify-content: flex-end;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s ease;
 
-  ion-img {
-    flex: 1; 
-    width: 100%; /* Asegura que las imágenes ocupen el ancho completo */
-    object-fit: cover; /* Ajusta la imagen para que no se distorsione */
+  &.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &.s1 {
+    background: linear-gradient(155deg, #ff5a1f 0%, #7a1f0a 70%);
+  }
+  &.s2 {
+    background: linear-gradient(155deg, #2b2b32 0%, #0d0d0f 75%);
+  }
+  &.s3 {
+    background: linear-gradient(155deg, #3ecf8e 0%, #0c3a26 75%);
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    background: rgba(0, 0, 0, .35);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 20px;
+    width: fit-content;
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: 19px;
+    color: #fff;
+    line-height: 1.15;
+    max-width: 85%;
+    margin: 0;
+  }
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink-40);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.active {
+    background: var(--orange);
+    width: 14px;
+    border-radius: 3px;
+  }
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.news-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.news-thumb {
+  width: 58px;
+  height: 58px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  .shoe-icon {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+  }
+}
+
+.news-body {
+  flex: 1;
+  min-width: 0;
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .08em;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  h4 {
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 4px;
+    color: var(--ink-90);
+  }
+
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-40);
   }
 }

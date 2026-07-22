@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnkrHub — Agregar par (FAB + Modal)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #131316;
+            --panel: #1c1c21;
+            --panel-2: #232329;
+            --paper: #ede6d6;
+            --orange: #ff5a1f;
+            --gain: #3ecf8e;
+            --loss: #ff4d5e;
+            --ink-90: rgba(237, 230, 214, .92);
+            --ink-60: rgba(237, 230, 214, .58);
+            --ink-40: rgba(237, 230, 214, .34);
+            --line: rgba(237, 230, 214, .10);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0a0a0c;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 16px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .note {
+            max-width: 390px;
+            margin: 0 auto 18px;
+            color: #7a7a82;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .04em;
+            text-align: center;
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .phone {
+            width: 390px;
+            height: 844px;
+            background: var(--ink);
+            border-radius: 44px;
+            border: 10px solid #000;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 255, 255, .03);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            color: var(--ink-90);
+        }
+
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 26px;
+            background: #000;
+            border-radius: 0 0 16px 16px;
+            z-index: 60;
+        }
+
+        /* dimmed inventory backdrop */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 20px 14px;
+            border-bottom: 1px solid var(--line);
+            flex-shrink: 0;
+        }
+
+        .top-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 17px;
+        }
+
+        .screen {
+            flex: 1;
+            overflow: hidden;
+            padding-bottom: 14px;
+            position: relative;
+            filter: blur(1.5px) brightness(.55);
+            pointer-events: none;
+        }
+
+        .inv-hero {
+            margin: 16px 20px 4px;
+            padding: 18px;
+            border-radius: 16px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+        }
+
+        .inv-hero .lbl {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .1em;
+            color: var(--ink-40);
+            text-transform: uppercase;
+        }
+
+        .inv-hero .val {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 28px;
+            color: var(--paper);
+            margin: 4px 0 6px;
+        }
+
+        .inv-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 16px 20px;
+        }
+
+        .inv-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            height: 140px;
+        }
+
+        /* FAB */
+        .fab {
+            position: absolute;
+            right: 20px;
+            bottom: 98px;
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: var(--orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px -6px rgba(255, 90, 31, .55);
+            z-index: 40;
+            border: none;
+        }
+
+        .fab svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* modal sheet */
+        .sheet-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 70;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .sheet {
+            width: 100%;
+            max-height: 88%;
+            background: var(--ink);
+            border-radius: 24px 24px 0 0;
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid var(--line);
+            box-shadow: 0 -20px 50px rgba(0, 0, 0, .5);
+        }
+
+        .drag-handle {
+            width: 36px;
+            height: 4px;
+            background: var(--ink-40);
+            border-radius: 3px;
+            margin: 10px auto 4px;
+        }
+
+        .sheet-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px 14px;
+        }
+
+        .sheet-head h3 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 16px;
+        }
+
+        .close-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 9px;
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-60);
+        }
+
+        .mode-switch {
+            display: flex;
+            gap: 8px;
+            margin: 0 20px 16px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 4px;
+        }
+
+        .mode-switch button {
+            flex: 1;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .05em;
+            padding: 9px 0;
+            border-radius: 11px;
+            border: none;
+            background: none;
+            color: var(--ink-60);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .mode-switch button.active {
+            background: var(--orange);
+            color: #1a0a02;
+            font-weight: 700;
+        }
+
+        .sheet-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 20px;
+        }
+
+        .sheet-body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* SCAN panel */
+        .scan-frame {
+            position: relative;
+            height: 220px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: radial-gradient(120% 100% at 50% 0%, #232329 0%, #131316 70%);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .scan-box {
+            width: 200px;
+            height: 120px;
+            border: 2px solid var(--orange);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .scan-box::before,
+        .scan-box::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-color: var(--paper);
+        }
+
+        .scan-line {
+            position: absolute;
+            left: 6%;
+            right: 6%;
+            height: 2px;
+            background: var(--orange);
+            box-shadow: 0 0 8px var(--orange);
+            animation: scanmove 2.1s ease-in-out infinite;
+        }
+
+        @keyframes scanmove {
+            0% {
+                top: 8%;
+            }
+
+            50% {
+                top: 88%;
+            }
+
+            100% {
+                top: 8%;
+            }
+        }
+
+        .scan-hint {
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-60);
+            margin-bottom: 16px;
+        }
+
+        .scan-result {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .scan-result .thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: #2b2b32;
+            flex-shrink: 0;
+        }
+
+        .scan-result h4 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .scan-result .sku {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--ink-40);
+            margin-top: 2px;
+        }
+
+        .scan-result .check {
+            margin-left: auto;
+            color: var(--gain);
+        }
+
+        /* MANUAL panel — form */
+        .field {
+            margin-bottom: 14px;
+        }
+
+        .field label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--ink-40);
+            margin-bottom: 6px;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            padding: 11px 12px;
+            color: var(--ink-90);
+            font-family: 'Inter';
+            font-size: 13px;
+            outline: none;
+        }
+
+        .field input::placeholder {
+            color: var(--ink-40);
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--orange);
+        }
+
+        .price-input {
+            position: relative;
+        }
+
+        .price-input span {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--ink-40);
+        }
+
+        .price-input input {
+            padding-left: 40px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .row-2 {
+            display: flex;
+            gap: 10px;
+        }
+
+        .row-2 .field {
+            flex: 1;
+        }
+
+        .chip-select {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chip-opt {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            color: var(--ink-60);
+            background: var(--panel);
+        }
+
+        .chip-opt.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: #1a0a02;
+            font-weight: 700;
+        }
+
+        .upload-box {
+            border: 1.5px dashed var(--line);
+            border-radius: 14px;
+            padding: 22px 16px;
+            text-align: center;
+            color: var(--ink-40);
+            margin-bottom: 14px;
+        }
+
+        .upload-box svg {
+            margin-bottom: 8px;
+            color: var(--ink-40);
+        }
+
+        .upload-box .t1 {
+            font-size: 12.5px;
+            color: var(--ink-60);
+            font-weight: 500;
+        }
+
+        .upload-box .t2 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .fav-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 18px;
+        }
+
+        .fav-toggle .l {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .switch-track {
+            width: 38px;
+            height: 22px;
+            background: var(--orange);
+            border-radius: 20px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .switch-track::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .sheet-footer {
+            padding: 14px 20px 22px;
+            border-top: 1px solid var(--line);
+            flex-shrink: 0;
+        }
+
+        .save-btn {
+            width: 100%;
+            background: var(--orange);
+            color: #1a0a02;
+            border: none;
+            border-radius: 14px;
+            padding: 15px 0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="col">
+        <div class="note">SNKRHUB — INVENTORY · FAB + MODAL "AGREGAR PAR"</div>
+        <div class="phone">
+            <div class="notch"></div>
+
+            <div class="top-bar">
+                <div class="top-title">Mi colección</div>
+            </div>
+            <div class="screen">
+                <div class="inv-hero">
+                    <div class="lbl">Valor total</div>
+                    <div class="val">CLP 3.184.500</div>
+                </div>
+                <div class="inv-grid">
+                    <div class="inv-card"></div>
+                    <div class="inv-card"></div>
+                    <div class="inv-card"></div>
+                    <div class="inv-card"></div>
+                </div>
+            </div>
+
+            <button class="fab" onclick="document.getElementById('backdrop').style.display='flex'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#1a0a02" stroke-width="2.4" stroke-linecap="round">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+            </button>
+
+            <!-- MODAL -->
+            <div class="sheet-backdrop" id="backdrop" style="display:flex;">
+                <div class="sheet">
+                    <div class="drag-handle"></div>
+                    <div class="sheet-head">
+                        <h3>Agregar par</h3>
+                        <div class="close-btn" onclick="document.getElementById('backdrop').style.display='none'">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.4">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="mode-switch">
+                        <button class="active" id="btnScan" onclick="setMode('scan')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2">
+                                <path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3M3 12h18" />
+                            </svg>
+                            ESCANEAR
+                        </button>
+                        <button id="btnManual" onclick="setMode('manual')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2">
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z" />
+                            </svg>
+                            MANUAL
+                        </button>
+                    </div>
+
+                    <div class="sheet-body">
+
+                        <!-- SCAN PANEL -->
+                        <div class="panel active" id="panelScan">
+                            <div class="scan-frame">
+                                <div class="scan-box">
+                                    <div class="scan-line"></div>
+                                </div>
+                            </div>
+                            <div class="scan-hint">Apunta la cámara al código de barras de la caja</div>
+                            <div class="scan-result">
+                                <div class="thumb"></div>
+                                <div>
+                                    <h4>Dunk Low "Panda Reverse"</h4>
+                                    <div class="sku">SKU DD1391-100 · Detectado</div>
+                                </div>
+                                <svg class="check" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.4">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- MANUAL PANEL -->
+                        <div class="panel" id="panelManual">
+                            <div class="upload-box">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8">
+                                    <rect x="3" y="5" width="18" height="15" rx="2" />
+                                    <circle cx="9" cy="11" r="2" />
+                                    <path d="M21 16l-5-5-4 4-3-3-6 6" />
+                                </svg>
+                                <div class="t1">Subir foto del par</div>
+                                <div class="t2">JPG o PNG, máx. 10MB</div>
+                            </div>
+
+                            <div class="field">
+                                <label>Marca</label>
+                                <select>
+                                    <option>Nike</option>
+                                    <option>Jordan</option>
+                                    <option>Adidas</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Modelo</label>
+                                <input type="text" placeholder='Ej. Dunk Low "Panda Reverse"'>
+                            </div>
+                            <div class="row-2">
+                                <div class="field">
+                                    <label>Talla (US)</label>
+                                    <input type="text" placeholder="9.5">
+                                </div>
+                                <div class="field">
+                                    <label>Precio compra</label>
+                                    <div class="price-input">
+                                        <span>CLP</span>
+                                        <input type="text" placeholder="109.990">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label>Condición</label>
+                                <div class="chip-select">
+                                    <div class="chip-opt active">DS</div>
+                                    <div class="chip-opt">VNDS</div>
+                                    <div class="chip-opt">Usado</div>
+                                </div>
+                            </div>
+
+                            <div class="fav-toggle">
+                                <div class="l">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)"
+                                        stroke-width="2">
+                                        <path
+                                            d="M12 21s-7-4.5-9.5-9C1 8 2.5 4.5 6 4c2-.3 4 .8 6 3 2-2.2 4-3.3 6-3 3.5.5 5 4 3.5 8-2.5 4.5-9.5 9-9.5 9z" />
+                                    </svg>
+                                    Marcar como favorito
+                                </div>
+                                <div class="switch-track"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="sheet-footer">
+                        <button class="save-btn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a0a02"
+                                stroke-width="2.4">
+                                <path d="M20 6L9 17l-5-5" />
+                            </svg>
+                            Agregar a mi colección
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function setMode(m) {
+            document.getElementById('btnScan').classList.toggle('active', m === 'scan');
+            document.getElementById('btnManual').classList.toggle('active', m === 'manual');
+            document.getElementById('panelScan').classList.toggle('active', m === 'scan');
+            document.getElementById('panelManual').classList.toggle('active', m === 'manual');
+        }
+        document.querySelectorAll('.chip-opt').forEach(c => {
+            c.addEventListener('click', () => {
+                c.parentElement.querySelectorAll('.chip-opt').forEach(x => x.classList.remove('active'));
+                c.classList.add('active');
+            });
+        });
+        document.querySelector('.switch-track').addEventListener('click', function () {
+            this.classList.toggle('off');
+            this.style.background = this.classList.contains('off') ? 'var(--panel-2)' : 'var(--orange)';
+        });
+    </script>
+</body>
+
+</html>

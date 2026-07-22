@@ -1,41 +1,150 @@
-<ion-header>
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Account</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content color="dark" class="account-content">
-  <ion-card color="medium" class="account-card">
-    <div class="account-header ion-padding">
-      @if (!isAuthenticated) {
-        <ion-button expand="full" shape="round" color="tertiary" [routerLink]="['/login']">Sign In</ion-button>
-        <p class="account-text">
-          Don't have an account? <a [routerLink]="['/registro']">Sign up</a>
-        </p>
-      } @else {
-        <div class="welcome-container">
-          <p class="welcome-message">Bienvenido de nuevo, {{ userName }}!</p>
-        </div>
-      }
-    </div>
-  </ion-card>
-
-  @if (isAuthenticated) {
-    <div class="logout-container">
-      <ion-button color="danger" (click)="logout()" expand="full">Logout</ion-button>
-    </div>
-  }
-
-  <ion-footer>
-    <ion-toolbar color="dark">
-      <div class="social-icons">
-        <ion-icon name="logo-facebook" (click)="openFacebook()"></ion-icon>
-        <ion-icon name="logo-twitter" (click)="openTwitter()"></ion-icon>
-        <ion-icon name="logo-instagram" (click)="openInstagram()"></ion-icon>
+<ion-content [fullscreen]="true" class="snkrhub-content">
+  <div class="screen-container">
+    <div class="top-bar">
+      <div class="back-btn" [routerLink]="['/home']" title="Volver al Home">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
       </div>
-    </ion-toolbar>
-  </ion-footer>
+      <div class="top-title">Mi perfil</div>
+      <div class="top-action" (click)="onSettingClick('Editar Perfil')">Editar</div>
+    </div>
+
+    <div class="screen">
+      <div class="avatar-block">
+        <div class="avatar">{{ userInitials }}</div>
+        <h2>{{ userName }}</h2>
+        <div class="handle">{{ '@' + userHandle }} · miembro desde 2024</div>
+        <div class="tier-chip">Colector Premium</div>
+      </div>
+
+      <div class="id-card">
+        <div class="id-top">
+          <div>
+            <div class="id-lbl">Collector ID</div>
+            <div class="id-num">{{ collectorId }}</div>
+          </div>
+          <div class="id-brand">SNKRHUB</div>
+        </div>
+        <div class="id-barcode">
+          @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38]; track i) {
+            <span [style.width.px]="(i % 4 === 0) ? 4.2 : ((i % 3 === 0) ? 2.8 : 1.4)"></span>
+          }
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="num">{{ totalSneakers() }}</div>
+          <div class="lbl">Pares</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">CLP {{ totalCollectionValue() | number:'1.0-0' }}</div>
+          <div class="lbl">Valor total</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">{{ favoritesCount() }}</div>
+          <div class="lbl">Favoritos</div>
+        </div>
+      </div>
+
+      <div class="settings-label">Cuenta</div>
+      <div class="settings-group">
+        <div class="settings-row" (click)="onSettingClick('Datos personales')">
+          <div class="ic">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
+            </svg>
+          </div>
+          <div class="txt">Datos personales</div>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </div>
+
+        <div class="settings-row" (click)="onSettingClick('Métodos de pago')">
+          <div class="ic">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="6" width="20" height="14" rx="2" />
+              <path d="M2 10h20" />
+            </svg>
+          </div>
+          <div class="txt">Métodos de pago</div>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </div>
+
+        <div class="settings-row" (click)="onSettingClick('Moneda: CLP')">
+          <div class="ic">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 3" />
+            </svg>
+          </div>
+          <div class="txt">Moneda: CLP</div>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="settings-label">Preferencias</div>
+      <div class="settings-group">
+        <div class="settings-row" [routerLink]="['/notifications']">
+          <div class="ic">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.7 21a2 2 0 01-3.4 0" />
+            </svg>
+          </div>
+          <div class="txt">Notificaciones</div>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </div>
+
+        <div class="settings-row" (click)="onSettingClick('Privacidad')">
+          <div class="ic">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z" />
+            </svg>
+          </div>
+          <div class="txt">Privacidad</div>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="settings-label">Soporte</div>
+      <div class="settings-group">
+        <div class="settings-row" (click)="onSettingClick('Centro de ayuda')">
+          <div class="ic">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M9.5 9.5a2.5 2.5 0 015 .5c0 2-2.5 2-2.5 4" />
+              <path d="M12 17h.01" />
+            </svg>
+          </div>
+          <div class="txt">Centro de ayuda</div>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </div>
+
+        <div class="settings-row danger" (click)="logout()">
+          <div class="ic">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <path d="M16 17l5-5-5-5" />
+              <path d="M21 12H9" />
+            </svg>
+          </div>
+          <div class="txt">Cerrar sesión</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>

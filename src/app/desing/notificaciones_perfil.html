@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnkrHub — Perfil & Notificaciones</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #131316;
+            --panel: #1c1c21;
+            --panel-2: #232329;
+            --paper: #ede6d6;
+            --orange: #ff5a1f;
+            --gain: #3ecf8e;
+            --loss: #ff4d5e;
+            --ink-90: rgba(237, 230, 214, .92);
+            --ink-60: rgba(237, 230, 214, .58);
+            --ink-40: rgba(237, 230, 214, .34);
+            --line: rgba(237, 230, 214, .10);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0a0a0c;
+            min-height: 100vh;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 16px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .note {
+            max-width: 390px;
+            margin: 0 auto 18px;
+            color: #7a7a82;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .04em;
+            text-align: center;
+        }
+
+        .phone {
+            width: 390px;
+            height: 844px;
+            background: var(--ink);
+            border-radius: 44px;
+            border: 10px solid #000;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 255, 255, .03);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            color: var(--ink-90);
+        }
+
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 26px;
+            background: #000;
+            border-radius: 0 0 16px 16px;
+            z-index: 50;
+        }
+
+        .barcode {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+        }
+
+        .barcode span {
+            display: block;
+            width: 2px;
+            background: currentColor;
+        }
+
+        .divider-ticket {
+            height: 16px;
+            margin: 0 20px;
+            background: repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px);
+            opacity: .6;
+        }
+
+        /* header */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 20px 12px;
+            border-bottom: 1px solid var(--line);
+            flex-shrink: 0;
+        }
+
+        .back-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-90);
+            flex-shrink: 0;
+        }
+
+        .top-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .14em;
+            color: var(--ink-40);
+            text-transform: uppercase;
+        }
+
+        .top-action {
+            margin-left: auto;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            color: var(--orange);
+        }
+
+        .screen {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ============ PROFILE ============ */
+        .avatar-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 22px 20px 16px;
+        }
+
+        .avatar {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--orange), #7a1f0a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 26px;
+            color: #fff;
+            border: 3px solid var(--panel);
+            box-shadow: 0 0 0 1px var(--line);
+            margin-bottom: 12px;
+        }
+
+        .avatar-block h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 19px;
+            letter-spacing: -.01em;
+        }
+
+        .avatar-block .handle {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-40);
+            margin-top: 2px;
+        }
+
+        .tier-chip {
+            margin-top: 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+            letter-spacing: .08em;
+            background: rgba(255, 90, 31, .14);
+            color: var(--orange);
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .id-card {
+            margin: 6px 20px 18px;
+            background: var(--paper);
+            border-radius: 14px;
+            padding: 14px 16px;
+            color: #171712;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .id-card .id-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .id-card .id-lbl {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 8.5px;
+            letter-spacing: .1em;
+            color: #171712aa;
+            text-transform: uppercase;
+        }
+
+        .id-card .id-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .id-card .id-brand {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 12px;
+        }
+
+        .id-barcode {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.4px;
+            height: 26px;
+        }
+
+        .id-barcode span {
+            display: block;
+            width: 1.4px;
+            background: #171712;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 20px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px 10px;
+            text-align: center;
+        }
+
+        .stat-box .num {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 16px;
+            color: var(--paper);
+        }
+
+        .stat-box .lbl {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 8.5px;
+            color: var(--ink-40);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-top: 2px;
+        }
+
+        .settings-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--orange);
+            padding: 6px 20px 8px;
+        }
+
+        .settings-group {
+            margin: 0 20px 18px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        .settings-row .ic {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: var(--panel-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-60);
+            flex-shrink: 0;
+        }
+
+        .settings-row .txt {
+            font-size: 13px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .settings-row .chev {
+            color: var(--ink-40);
+        }
+
+        .settings-row.danger .txt {
+            color: var(--loss);
+        }
+
+        .settings-row.danger .ic {
+            color: var(--loss);
+        }
+
+        /* ============ NOTIFICATIONS ============ */
+        .notif-chips {
+            display: flex;
+            gap: 8px;
+            padding: 14px 20px;
+            overflow-x: auto;
+        }
+
+        .n-chip {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: .04em;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            color: var(--ink-60);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .n-chip.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: #1a0a02;
+            font-weight: 700;
+        }
+
+        .day-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--ink-40);
+            padding: 14px 20px 6px;
+        }
+
+        .notif-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px 20px;
+            position: relative;
+        }
+
+        .notif-card.unread {
+            background: rgba(255, 90, 31, .05);
+        }
+
+        .notif-card .dot {
+            position: absolute;
+            left: 8px;
+            top: 20px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--orange);
+        }
+
+        .n-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .n-icon.up {
+            background: rgba(62, 207, 142, .14);
+            color: var(--gain);
+        }
+
+        .n-icon.down {
+            background: rgba(255, 77, 94, .14);
+            color: var(--loss);
+        }
+
+        .n-icon.rel {
+            background: rgba(255, 90, 31, .14);
+            color: var(--orange);
+        }
+
+        .n-icon.sys {
+            background: var(--panel-2);
+            color: var(--ink-60);
+        }
+
+        .n-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .n-body h4 {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .n-body p {
+            font-size: 11.5px;
+            color: var(--ink-60);
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        .n-body .time {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+            color: var(--ink-40);
+            margin-top: 5px;
+            display: block;
+        }
+
+        .notif-card.read .n-icon,
+        .notif-card.read h4 {
+            opacity: .55;
+        }
+
+        /* switcher between the two mockups (just for this deliverable) */
+        .switch {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 4px;
+        }
+
+        .switch button {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: .05em;
+            padding: 6px 16px;
+            border-radius: 16px;
+            border: none;
+            background: none;
+            color: var(--ink-60);
+        }
+
+        .switch button.active {
+            background: var(--orange);
+            color: #1a0a02;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="col">
+        <div class="note">SNKRHUB — PERFIL</div>
+        <div class="phone">
+            <div class="notch"></div>
+            <div class="top-bar">
+                <div class="back-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.4">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </div>
+                <div class="top-title">Mi perfil</div>
+                <div class="top-action">Editar</div>
+            </div>
+
+            <div class="screen">
+                <div class="avatar-block">
+                    <div class="avatar">NM</div>
+                    <h2>Nicolás M.</h2>
+                    <div class="handle">@nicolas.snkr · miembro desde 2024</div>
+                    <div class="tier-chip">Colector Premium</div>
+                </div>
+
+                <div class="id-card">
+                    <div class="id-top">
+                        <div>
+                            <div class="id-lbl">Collector ID</div>
+                            <div class="id-num">SNKR-000482</div>
+                        </div>
+                        <div class="id-brand">SNKRHUB</div>
+                    </div>
+                    <div class="id-barcode" id="idBarcode"></div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="num">14</div>
+                        <div class="lbl">Pares</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="num">$3.18M</div>
+                        <div class="lbl">Valor total</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="num">5</div>
+                        <div class="lbl">Favoritos</div>
+                    </div>
+                </div>
+
+                <div class="settings-label">Cuenta</div>
+                <div class="settings-group">
+                    <div class="settings-row">
+                        <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="8" r="4" />
+                                <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
+                            </svg></div>
+                        <div class="txt">Datos personales</div>
+                        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M9 6l6 6-6 6" />
+                        </svg>
+                    </div>
+                    <div class="settings-row">
+                        <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="6" width="20" height="14" rx="2" />
+                                <path d="M2 10h20" />
+                            </svg></div>
+                        <div class="txt">Métodos de pago</div>
+                        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M9 6l6 6-6 6" />
+                        </svg>
+                    </div>
+                    <div class="settings-row">
+                        <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M12 7v5l3 3" />
+                            </svg></div>
+                        <div class="txt">Moneda: CLP</div>
+                        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M9 6l6 6-6 6" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="settings-label">Preferencias</div>
+                <div class="settings-group">
+                    <div class="settings-row">
+                        <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                                <path d="M13.7 21a2 2 0 01-3.4 0" />
+                            </svg></div>
+                        <div class="txt">Notificaciones</div>
+                        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M9 6l6 6-6 6" />
+                        </svg>
+                    </div>
+                    <div class="settings-row">
+                        <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z" />
+                            </svg></div>
+                        <div class="txt">Privacidad</div>
+                        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M9 6l6 6-6 6" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="settings-label">Soporte</div>
+                <div class="settings-group">
+                    <div class="settings-row">
+                        <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M9.5 9.5a2.5 2.5 0 015 .5c0 2-2.5 2-2.5 4" />
+                                <path d="M12 17h.01" />
+                            </svg></div>
+                        <div class="txt">Centro de ayuda</div>
+                        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M9 6l6 6-6 6" />
+                        </svg>
+                    </div>
+                    <div class="settings-row danger">
+                        <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                                <path d="M16 17l5-5-5-5" />
+                                <path d="M21 12H9" />
+                            </svg></div>
+                        <div class="txt">Cerrar sesión</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="note">SNKRHUB — NOTIFICACIONES</div>
+        <div class="phone">
+            <div class="notch"></div>
+            <div class="top-bar">
+                <div class="back-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.4">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </div>
+                <div class="top-title">Notificaciones</div>
+                <div class="top-action">Marcar leídas</div>
+            </div>
+
+            <div class="screen">
+                <div class="notif-chips">
+                    <div class="n-chip active">Todas</div>
+                    <div class="n-chip">Alertas de precio</div>
+                    <div class="n-chip">Lanzamientos</div>
+                    <div class="n-chip">Sistema</div>
+                </div>
+
+                <div class="day-label">Hoy</div>
+
+                <div class="notif-card unread">
+                    <div class="dot"></div>
+                    <div class="n-icon up"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.4">
+                            <path d="M4 15l6-6 4 4 6-8" />
+                            <path d="M20 5h-5v5" />
+                        </svg></div>
+                    <div class="n-body">
+                        <h4>Tu Yeezy 350 "Zebra" subió 18%</h4>
+                        <p>Ahora vale CLP 245.000 en el mercado de reventa.</p>
+                        <span class="time">Hace 40 min</span>
+                    </div>
+                </div>
+
+                <div class="notif-card unread">
+                    <div class="dot"></div>
+                    <div class="n-icon rel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.4">
+                            <rect x="3" y="5" width="18" height="16" rx="2" />
+                            <path d="M8 3v4M16 3v4M3 10h18" />
+                        </svg></div>
+                    <div class="n-body">
+                        <h4>Dunk Low "Panda Reverse" lanza en 6 días</h4>
+                        <p>Activaste alerta para este lanzamiento el 27 de julio.</p>
+                        <span class="time">Hace 3 h</span>
+                    </div>
+                </div>
+
+                <div class="day-label">Ayer</div>
+
+                <div class="notif-card">
+                    <div class="n-icon down"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.4">
+                            <path d="M4 9l6 6 4-4 6 8" />
+                            <path d="M20 19h-5v-5" />
+                        </svg></div>
+                    <div class="n-body">
+                        <h4>Dunk Low "Panda" bajó 4%</h4>
+                        <p>Un par de tu colección cambió de valor.</p>
+                        <span class="time">Ayer, 18:20</span>
+                    </div>
+                </div>
+
+                <div class="notif-card">
+                    <div class="n-icon sys"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.4">
+                            <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z" />
+                        </svg></div>
+                    <div class="n-body">
+                        <h4>Par verificado correctamente</h4>
+                        <p>El Air Jordan 3 "Fire Red" fue autenticado y agregado.</p>
+                        <span class="time">Ayer, 11:05</span>
+                    </div>
+                </div>
+
+                <div class="day-label">Esta semana</div>
+
+                <div class="notif-card read">
+                    <div class="n-icon rel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.4">
+                            <rect x="3" y="5" width="18" height="16" rx="2" />
+                            <path d="M8 3v4M16 3v4M3 10h18" />
+                        </svg></div>
+                    <div class="n-body">
+                        <h4>Nuevo drop agregado al calendario</h4>
+                        <p>Air Max Plus "Sunset" — 2 de agosto.</p>
+                        <span class="time">Lunes, 09:12</span>
+                    </div>
+                </div>
+
+                <div class="notif-card read">
+                    <div class="n-icon sys"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.4">
+                            <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z" />
+                        </svg></div>
+                    <div class="n-body">
+                        <h4>Respaldo de tu colección completado</h4>
+                        <p>Todos tus datos están sincronizados en la nube.</p>
+                        <span class="time">Lunes, 07:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // barcode on ID card
+        const bc = document.getElementById('idBarcode');
+        let bars = '';
+        for (let i = 0; i < 38; i++) {
+            const w = [1.4, 1.4, 2.8, 4.2][Math.floor(Math.random() * 4)];
+            bars += `<span style="width:${w}px"></span>`;
+        }
+        bc.innerHTML = bars;
+    </script>
+</body>
+
+</html>

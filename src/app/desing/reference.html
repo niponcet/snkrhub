@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnkrHub — Rediseño</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #131316;
+            --panel: #1c1c21;
+            --panel-2: #232329;
+            --paper: #ede6d6;
+            --orange: #ff5a1f;
+            --gain: #3ecf8e;
+            --loss: #ff4d5e;
+            --ink-90: rgba(237, 230, 214, .92);
+            --ink-60: rgba(237, 230, 214, .58);
+            --ink-40: rgba(237, 230, 214, .34);
+            --line: rgba(237, 230, 214, .10);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0a0a0c;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 16px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .note {
+            max-width: 390px;
+            margin: 0 auto 18px;
+            color: #7a7a82;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .04em;
+            text-align: center;
+        }
+
+        .wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ---- phone frame ---- */
+        .phone {
+            width: 390px;
+            height: 844px;
+            background: var(--ink);
+            border-radius: 44px;
+            border: 10px solid #000;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 255, 255, .03);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            color: var(--ink-90);
+        }
+
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 26px;
+            background: #000;
+            border-radius: 0 0 16px 16px;
+            z-index: 50;
+        }
+
+        /* ---- barcode signature ---- */
+        .barcode {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+        }
+
+        .barcode span {
+            display: block;
+            width: 2px;
+            background: currentColor;
+        }
+
+        .divider-ticket {
+            height: 16px;
+            position: relative;
+            margin: 0 20px;
+            background: repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px);
+            opacity: .6;
+        }
+
+        /* ---- header ---- */
+        .app-header {
+            padding: 20px 20px 14px;
+            border-bottom: 1px solid var(--line);
+            background: var(--ink);
+            flex-shrink: 0;
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .brand {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 19px;
+            letter-spacing: -0.02em;
+            color: var(--paper);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand .barcode {
+            color: var(--orange);
+        }
+
+        .scan-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: var(--orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+        }
+
+        .ticker {
+            overflow: hidden;
+            white-space: nowrap;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-60);
+            border-top: 1px solid var(--line);
+            padding-top: 10px;
+        }
+
+        .ticker-track {
+            display: inline-block;
+            animation: tick 22s linear infinite;
+        }
+
+        .ticker-track span {
+            margin-right: 22px;
+        }
+
+        .up {
+            color: var(--gain);
+        }
+
+        .down {
+            color: var(--loss);
+        }
+
+        @keyframes tick {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ---- scroll area ---- */
+        .screen {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 14px;
+        }
+
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-view {
+            display: none;
+        }
+
+        .tab-view.active {
+            display: block;
+        }
+
+        .section-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--orange);
+            padding: 18px 20px 8px;
+        }
+
+        /* ---- HOME: carousel ---- */
+        .carousel {
+            position: relative;
+            margin: 0 20px;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 190px;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 16px;
+            opacity: 0;
+            transition: opacity .6s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .s1 {
+            background: linear-gradient(155deg, #ff5a1f 0%, #7a1f0a 70%);
+        }
+
+        .s2 {
+            background: linear-gradient(155deg, #2b2b32 0%, #0d0d0f 75%);
+        }
+
+        .s3 {
+            background: linear-gradient(155deg, #3ecf8e 0%, #0c3a26 75%);
+        }
+
+        .slide .tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .1em;
+            background: rgba(0, 0, 0, .35);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 20px;
+            width: fit-content;
+            margin-bottom: 8px;
+        }
+
+        .slide h3 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 19px;
+            color: #fff;
+            line-height: 1.15;
+            max-width: 85%;
+        }
+
+        .dots {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--ink-40);
+        }
+
+        .dot.active {
+            background: var(--orange);
+            width: 14px;
+            border-radius: 3px;
+        }
+
+        /* ---- news feed cards ---- */
+        .news-card {
+            display: flex;
+            gap: 12px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .news-thumb {
+            width: 58px;
+            height: 58px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .news-body .tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            letter-spacing: .08em;
+            color: var(--orange);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .news-body h4 {
+            font-size: 13.5px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            color: var(--ink-90);
+        }
+
+        .news-body .meta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--ink-40);
+        }
+
+        /* ---- shoe silhouette icon ---- */
+        .shoe-icon {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+        }
+
+        /* ---- CATALOG: release calendar ---- */
+        .cal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 4px;
+        }
+
+        .cal-month {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 17px;
+        }
+
+        .cal-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cal-nav button {
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            color: var(--ink-60);
+        }
+
+        .date-group {
+            padding: 14px 20px 4px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .date-chip {
+            width: 46px;
+            flex-shrink: 0;
+            text-align: center;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 8px 0;
+        }
+
+        .date-chip .d {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 17px;
+            color: var(--paper);
+        }
+
+        .date-chip .m {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            color: var(--ink-40);
+            text-transform: uppercase;
+        }
+
+        .release-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .release-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .release-thumb {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .release-card h5 {
+            font-size: 12.5px;
+            font-weight: 600;
+        }
+
+        .release-card .brand-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            color: var(--ink-40);
+            text-transform: uppercase;
+        }
+
+        .countdown {
+            margin-left: auto;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            background: rgba(255, 90, 31, .14);
+            color: var(--orange);
+            padding: 3px 7px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        /* ---- DATABASE (favorites replacement) ---- */
+        .search-wrap {
+            padding: 16px 20px 10px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--ink-90);
+            font-family: 'Inter';
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .search-bar input::placeholder {
+            color: var(--ink-40);
+        }
+
+        .chips {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 14px;
+            overflow-x: auto;
+        }
+
+        .chip {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: .04em;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            color: var(--ink-60);
+            white-space: nowrap;
+        }
+
+        .chip.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: #1a0a02;
+            font-weight: 700;
+        }
+
+        .db-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .db-thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .db-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .db-body h4 {
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .db-body p {
+            font-size: 11.5px;
+            color: var(--ink-60);
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+
+        .db-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .spark {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 16px;
+        }
+
+        .spark span {
+            width: 3px;
+            background: var(--ink-40);
+            border-radius: 1px;
+        }
+
+        .spark span.up {
+            background: var(--gain);
+        }
+
+        .price-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ---- INVENTORY ---- */
+        .inv-hero {
+            margin: 16px 20px 4px;
+            padding: 18px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            background: var(--panel);
+            border: 1px solid var(--line);
+        }
+
+        .inv-hero .bg-barcode {
+            position: absolute;
+            right: -6px;
+            top: 0;
+            bottom: 0;
+            width: 90px;
+            opacity: .25;
+            color: var(--orange);
+        }
+
+        .inv-hero .lbl {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .1em;
+            color: var(--ink-40);
+            text-transform: uppercase;
+        }
+
+        .inv-hero .val {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 30px;
+            color: var(--paper);
+            margin: 4px 0 6px;
+        }
+
+        .inv-hero .delta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11.5px;
+            color: var(--gain);
+        }
+
+        .inv-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 14px 20px 6px;
+        }
+
+        .inv-tab {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            color: var(--ink-60);
+        }
+
+        .inv-tab.active {
+            background: var(--paper);
+            color: #171712;
+            border-color: var(--paper);
+            font-weight: 700;
+        }
+
+        .inv-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 8px 20px 20px;
+        }
+
+        .inv-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .inv-thumb {
+            height: 88px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .heart {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, .4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .heart.on svg {
+            fill: var(--orange);
+            stroke: var(--orange);
+        }
+
+        .inv-info {
+            padding: 10px 10px 12px;
+        }
+
+        .inv-info h5 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 1px;
+        }
+
+        .inv-info .size {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+            color: var(--ink-40);
+            margin-bottom: 6px;
+        }
+
+        .inv-info .pl {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .inv-info .now {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--paper);
+        }
+
+        .inv-info .pct {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+        }
+
+        /* ---- bottom nav ---- */
+        .navbar {
+            display: flex;
+            border-top: 1px solid var(--line);
+            background: var(--ink);
+            padding: 10px 8px 16px;
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: var(--ink-40);
+        }
+
+        .nav-btn.active {
+            color: var(--orange);
+        }
+
+        .nav-btn span {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            letter-spacing: .04em;
+        }
+
+        .nav-tick {
+            width: 14px;
+            height: 2px;
+            background: var(--orange);
+            border-radius: 2px;
+            margin-top: 1px;
+            opacity: 0;
+        }
+
+        .nav-btn.active .nav-tick {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="note">SNKRHUB — PROPUESTA DE REDISEÑO · PROTOTIPO INTERACTIVO</div>
+        <div class="phone">
+            <div class="notch"></div>
+
+            <div class="app-header">
+                <div class="brand-row">
+                    <div class="brand">
+                        SNKRHUB
+                        <svg class="barcode" viewBox="0 0 24 14" width="24" height="14">
+                            <g fill="currentColor">
+                                <rect x="0" width="1.5" height="14" />
+                                <rect x="3" width="1" height="14" />
+                                <rect x="5.5" width="2" height="14" />
+                                <rect x="9" width="1" height="14" />
+                                <rect x="11.5" width="1.5" height="14" />
+                                <rect x="14.5" width="1" height="14" />
+                                <rect x="17" width="2" height="14" />
+                                <rect x="21" width="1" height="14" />
+                            </g>
+                        </svg>
+                    </div>
+                    <button class="scan-btn"
+                        onclick="sendPrompt('Quiero escanear el código de barras de una caja para agregar un par nuevo')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a0a02" stroke-width="2.4"
+                            stroke-linecap="round">
+                            <path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3M3 12h18" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="ticker">
+                    <div class="ticker-track" id="tickerTrack"></div>
+                </div>
+            </div>
+
+            <div class="screen">
+
+                <!-- HOME -->
+                <div class="tab-view active" id="tab-home">
+                    <div class="section-label">Últimos lanzamientos y noticias</div>
+                    <div class="carousel" id="carousel">
+                        <div class="slide s1 active">
+                            <span class="tag">JORDAN BRAND</span>
+                            <h3>Air Jordan 4 "Bred Reimagined" agota stock en 6 minutos</h3>
+                        </div>
+                        <div class="slide s2">
+                            <span class="tag">STREETWEAR</span>
+                            <h3>Travis Scott confirma colaboración sorpresa con Nike para 2026</h3>
+                        </div>
+                        <div class="slide s3">
+                            <span class="tag">MERCADO</span>
+                            <h3>El precio reventa de la Yeezy 350 sube 18% esta semana</h3>
+                        </div>
+                    </div>
+                    <div class="dots" id="dots"></div>
+
+                    <div class="divider-ticket" style="margin-top:16px;"></div>
+
+                    <div class="news-card">
+                        <div class="news-thumb" style="background:#2a2a30;">${SHOE}</div>
+                        <div class="news-body">
+                            <span class="tag">NIKE</span>
+                            <h4>Nike anuncia relanzamiento del Air Max Plus "Sunset" para agosto</h4>
+                            <span class="meta">Hace 2 h · SnkrHub News</span>
+                        </div>
+                    </div>
+                    <div class="news-card">
+                        <div class="news-thumb" style="background:#33241c;">${SHOE}</div>
+                        <div class="news-body">
+                            <span class="tag">ADIDAS</span>
+                            <h4>Adidas Samba vuelve a subir en el índice de reventa por tercer mes</h4>
+                            <span class="meta">Hace 5 h · Market Watch</span>
+                        </div>
+                    </div>
+                    <div class="news-card">
+                        <div class="news-thumb" style="background:#1c2a24;">${SHOE}</div>
+                        <div class="news-body">
+                            <span class="tag">CULTURA</span>
+                            <h4>Cómo la IA está cambiando la autenticación de sneakers raros</h4>
+                            <span class="meta">Ayer · SnkrHub News</span>
+                        </div>
+                    </div>
+                    <div class="news-card" style="border-bottom:none;">
+                        <div class="news-thumb" style="background:#2a2020;">${SHOE}</div>
+                        <div class="news-body">
+                            <span class="tag">JORDAN BRAND</span>
+                            <h4>Filtrada la lista completa de colorways Jordan 1 Low para el Q1 2027</h4>
+                            <span class="meta">Ayer · Leak Report</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CATALOG -->
+                <div class="tab-view" id="tab-catalog">
+                    <div class="cal-header">
+                        <div class="cal-month">Calendario · Julio 2026</div>
+                        <div class="cal-nav"><button>‹</button><button>›</button></div>
+                    </div>
+                    <div class="section-label" style="padding-top:10px;">Próximos drops</div>
+
+                    <div class="date-group">
+                        <div class="date-chip">
+                            <div class="d">24</div>
+                            <div class="m">Jul</div>
+                        </div>
+                        <div class="release-list">
+                            <div class="release-card">
+                                <div class="release-thumb" style="background:#c23a1f;">${SHOE}</div>
+                                <div>
+                                    <h5>Air Jordan 3 "Fire Red"</h5><span class="brand-tag">Jordan · CLP 189.990</span>
+                                </div>
+                                <span class="countdown">3 DÍAS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="date-group">
+                        <div class="date-chip">
+                            <div class="d">27</div>
+                            <div class="m">Jul</div>
+                        </div>
+                        <div class="release-list">
+                            <div class="release-card">
+                                <div class="release-thumb" style="background:#2b2b32;">${SHOE}</div>
+                                <div>
+                                    <h5>Dunk Low "Panda Reverse"</h5><span class="brand-tag">Nike · CLP 109.990</span>
+                                </div>
+                                <span class="countdown">6 DÍAS</span>
+                            </div>
+                            <div class="release-card">
+                                <div class="release-thumb" style="background:#1c2a24;">${SHOE}</div>
+                                <div>
+                                    <h5>Yeezy Boost 350 V2 "Onyx"</h5><span class="brand-tag">Adidas · CLP
+                                        199.990</span>
+                                </div>
+                                <span class="countdown">6 DÍAS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="date-group" style="padding-bottom:20px;">
+                        <div class="date-chip">
+                            <div class="d">02</div>
+                            <div class="m">Ago</div>
+                        </div>
+                        <div class="release-list">
+                            <div class="release-card">
+                                <div class="release-thumb" style="background:#33241c;">${SHOE}</div>
+                                <div>
+                                    <h5>Air Max Plus "Sunset"</h5><span class="brand-tag">Nike · CLP 149.990</span>
+                                </div>
+                                <span class="countdown">12 DÍAS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DATABASE / FAVORITES REPLACEMENT -->
+                <div class="tab-view" id="tab-database">
+                    <div class="search-wrap">
+                        <div class="search-bar">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8a8a92"
+                                stroke-width="2.2">
+                                <circle cx="11" cy="11" r="7" />
+                                <path d="M21 21l-4.3-4.3" />
+                            </svg>
+                            <input type="text" placeholder="Buscar modelo, marca o SKU…">
+                        </div>
+                    </div>
+                    <div class="chips">
+                        <div class="chip active">Todos</div>
+                        <div class="chip">Nike</div>
+                        <div class="chip">Jordan</div>
+                        <div class="chip">Adidas</div>
+                    </div>
+                    <div class="section-label" style="padding-top:0;">Base de datos · Históricos</div>
+
+                    <div class="db-card">
+                        <div class="db-thumb" style="background:#2b2b32;">${SHOE}</div>
+                        <div class="db-body">
+                            <h4>Air Jordan 1 High "Chicago"</h4>
+                            <p>Colorway original de 1985, reeditada múltiples veces. Referencia histórica del mercado de
+                                reventa.</p>
+                            <div class="db-foot">
+                                <div class="spark"><span style="height:5px"></span><span style="height:8px"></span><span
+                                        class="up" style="height:6px"></span><span class="up"
+                                        style="height:12px"></span><span class="up" style="height:16px"></span></div>
+                                <span class="price-tag" style="color:var(--gain);">CLP 420.000 ↑</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="db-card">
+                        <div class="db-thumb" style="background:#c23a1f;">${SHOE}</div>
+                        <div class="db-body">
+                            <h4>Nike Dunk Low "Panda"</h4>
+                            <p>El colorway blanco/negro más buscado de la última generación de Dunks. Alta liquidez de
+                                reventa.</p>
+                            <div class="db-foot">
+                                <div class="spark"><span style="height:14px"></span><span
+                                        style="height:10px"></span><span style="height:9px"></span><span
+                                        style="height:6px"></span><span style="height:5px"></span></div>
+                                <span class="price-tag" style="color:var(--loss);">CLP 98.000 ↓</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="db-card" style="border-bottom:none;">
+                        <div class="db-thumb" style="background:#1c2a24;">${SHOE}</div>
+                        <div class="db-body">
+                            <h4>Adidas Yeezy 350 V2 "Zebra"</h4>
+                            <p>Uno de los colorways insignia de la línea Yeezy. Producción limitada desde 2022.</p>
+                            <div class="db-foot">
+                                <div class="spark"><span style="height:6px"></span><span class="up"
+                                        style="height:9px"></span><span class="up" style="height:8px"></span><span
+                                        class="up" style="height:13px"></span><span class="up"
+                                        style="height:15px"></span></div>
+                                <span class="price-tag" style="color:var(--gain);">CLP 245.000 ↑</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INVENTORY -->
+                <div class="tab-view" id="tab-inventory">
+                    <div class="inv-hero">
+                        <svg class="bg-barcode" viewBox="0 0 60 90" preserveAspectRatio="none">
+                            <g fill="currentColor">
+                                <rect x="0" width="2" height="90" />
+                                <rect x="4" width="1" height="90" />
+                                <rect x="8" width="3" height="90" />
+                                <rect x="14" width="1" height="90" />
+                                <rect x="18" width="2" height="90" />
+                                <rect x="23" width="1" height="90" />
+                                <rect x="27" width="3" height="90" />
+                                <rect x="33" width="1" height="90" />
+                                <rect x="37" width="2" height="90" />
+                                <rect x="42" width="1" height="90" />
+                                <rect x="46" width="3" height="90" />
+                                <rect x="52" width="1" height="90" />
+                                <rect x="56" width="2" height="90" />
+                            </g>
+                        </svg>
+                        <div class="lbl">Valor total de la colección</div>
+                        <div class="val">CLP 3.184.500</div>
+                        <div class="delta">↑ +6,2% este mes · 14 pares</div>
+                    </div>
+
+                    <div class="inv-tabs">
+                        <div class="inv-tab active">Todos (14)</div>
+                        <div class="inv-tab">Favoritos (5)</div>
+                    </div>
+
+                    <div class="inv-grid">
+                        <div class="inv-card">
+                            <div class="inv-thumb" style="background:#c23a1f;">${SHOE}
+                                <div class="heart on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                        stroke="#fff" stroke-width="2">
+                                        <path
+                                            d="M12 21s-7-4.5-9.5-9C1 8 2.5 4.5 6 4c2-.3 4 .8 6 3 2-2.2 4-3.3 6-3 3.5.5 5 4 3.5 8-2.5 4.5-9.5 9-9.5 9z" />
+                                    </svg></div>
+                            </div>
+                            <div class="inv-info">
+                                <h5>Air Jordan 3 "Fire Red"</h5>
+                                <div class="size">US 9.5 · DS</div>
+                                <div class="pl"><span class="now">CLP 210k</span><span class="pct"
+                                        style="color:var(--gain);">+10%</span></div>
+                            </div>
+                        </div>
+                        <div class="inv-card">
+                            <div class="inv-thumb" style="background:#2b2b32;">${SHOE}
+                                <div class="heart"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                        stroke="#fff" stroke-width="2">
+                                        <path
+                                            d="M12 21s-7-4.5-9.5-9C1 8 2.5 4.5 6 4c2-.3 4 .8 6 3 2-2.2 4-3.3 6-3 3.5.5 5 4 3.5 8-2.5 4.5-9.5 9-9.5 9z" />
+                                    </svg></div>
+                            </div>
+                            <div class="inv-info">
+                                <h5>Dunk Low "Panda"</h5>
+                                <div class="size">US 10 · VNDS</div>
+                                <div class="pl"><span class="now">CLP 98k</span><span class="pct"
+                                        style="color:var(--loss);">-4%</span></div>
+                            </div>
+                        </div>
+                        <div class="inv-card">
+                            <div class="inv-thumb" style="background:#1c2a24;">${SHOE}
+                                <div class="heart on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                        stroke="#fff" stroke-width="2">
+                                        <path
+                                            d="M12 21s-7-4.5-9.5-9C1 8 2.5 4.5 6 4c2-.3 4 .8 6 3 2-2.2 4-3.3 6-3 3.5.5 5 4 3.5 8-2.5 4.5-9.5 9-9.5 9z" />
+                                    </svg></div>
+                            </div>
+                            <div class="inv-info">
+                                <h5>Yeezy 350 "Zebra"</h5>
+                                <div class="size">US 9 · DS</div>
+                                <div class="pl"><span class="now">CLP 245k</span><span class="pct"
+                                        style="color:var(--gain);">+18%</span></div>
+                            </div>
+                        </div>
+                        <div class="inv-card">
+                            <div class="inv-thumb" style="background:#33241c;">${SHOE}
+                                <div class="heart"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                        stroke="#fff" stroke-width="2">
+                                        <path
+                                            d="M12 21s-7-4.5-9.5-9C1 8 2.5 4.5 6 4c2-.3 4 .8 6 3 2-2.2 4-3.3 6-3 3.5.5 5 4 3.5 8-2.5 4.5-9.5 9-9.5 9z" />
+                                    </svg></div>
+                            </div>
+                            <div class="inv-info">
+                                <h5>Air Max Plus "Sunset"</h5>
+                                <div class="size">US 9.5 · DS</div>
+                                <div class="pl"><span class="now">CLP 150k</span><span class="pct"
+                                        style="color:var(--gain);">+3%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="navbar">
+                <button class="nav-btn active" data-tab="home">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 11l9-8 9 8" />
+                        <path d="M5 10v10h14V10" />
+                    </svg>
+                    <span>HOME</span>
+                    <div class="nav-tick"></div>
+                </button>
+                <button class="nav-btn" data-tab="catalog">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="5" width="18" height="16" rx="2" />
+                        <path d="M8 3v4M16 3v4M3 10h18" />
+                    </svg>
+                    <span>CATALOG</span>
+                    <div class="nav-tick"></div>
+                </button>
+                <button class="nav-btn" data-tab="database">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="M21 21l-4.3-4.3" />
+                    </svg>
+                    <span>DATABASE</span>
+                    <div class="nav-tick"></div>
+                </button>
+                <button class="nav-btn" data-tab="inventory">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 7l2-4h14l2 4" />
+                        <rect x="3" y="7" width="18" height="13" rx="2" />
+                        <path d="M9 12h6" />
+                    </svg>
+                    <span>INVENTORY</span>
+                    <div class="nav-tick"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sneaker silhouette icon, reused everywhere ${SHOE} appears
+        const SHOE_SVG = `<svg class="shoe-icon" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.85">
+  <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13 3-4 7-6 12-6 3 0 5 2 5 5 0 4 3 7 8 8l20 5c6 2 13 5 13 12 0 4-3 6-7 6H10c-3 0-5-2-5-6z" fill="rgba(255,255,255,0.9)"/>
+  <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13" stroke="rgba(0,0,0,0.15)" stroke-width="2" fill="none"/>
+  <circle cx="30" cy="24" r="1.6" fill="rgba(0,0,0,.25)"/>
+  <circle cx="36" cy="20" r="1.6" fill="rgba(0,0,0,.25)"/>
+  <circle cx="42" cy="17" r="1.6" fill="rgba(0,0,0,.25)"/>
+</svg>`;
+        document.querySelectorAll('.news-thumb, .release-thumb, .db-thumb, .inv-thumb').forEach(el => {
+            el.innerHTML = el.innerHTML.replace('${SHOE}', SHOE_SVG) + (el.classList.contains('inv-thumb') ? '' : '');
+        });
+        // re-append SHOE for inv-thumb after heart already inside (fix order)
+        document.querySelectorAll('.inv-thumb').forEach(el => {
+            if (!el.querySelector('.shoe-icon')) {
+                el.insertAdjacentHTML('afterbegin', SHOE_SVG);
+            }
+        });
+
+        // ticker
+        const tickerData = [
+            ['AJ1 Chicago', '+2.4%', 'up'], ['Yeezy 350 Zebra', '+1.1%', 'up'], ['Dunk Low Panda', '-0.8%', 'down'],
+            ['AJ4 Bred', '+3.9%', 'up'], ['Air Max Plus', '+0.6%', 'up'], ['Samba OG', '-1.4%', 'down']
+        ];
+        const track = document.getElementById('tickerTrack');
+        let html = '';
+        for (let r = 0; r < 2; r++) {
+            tickerData.forEach(([n, p, d]) => { html += `<span>${n} <span class="${d}">${p}</span></span>`; });
+        }
+        track.innerHTML = html;
+
+        // carousel autoplay
+        const slides = document.querySelectorAll('.slide');
+        const dotsWrap = document.getElementById('dots');
+        slides.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            dotsWrap.appendChild(d);
+        });
+        const dots = document.querySelectorAll('.dot');
+        let cur = 0;
+        setInterval(() => {
+            slides[cur].classList.remove('active');
+            dots[cur].classList.remove('active');
+            cur = (cur + 1) % slides.length;
+            slides[cur].classList.add('active');
+            dots[cur].classList.add('active');
+        }, 3500);
+
+        // tab switching
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+                document.querySelector('.screen').scrollTop = 0;
+            });
+        });
+
+        // favorite heart toggle
+        document.querySelectorAll('.heart').forEach(h => {
+            h.addEventListener('click', (e) => {
+                e.stopPropagation();
+                h.classList.toggle('on');
+            });
+        });
+
+        // inventory tab toggle (visual only)
+        document.querySelectorAll('.inv-tab').forEach(t => {
+            t.addEventListener('click', () => {
+                document.querySelectorAll('.inv-tab').forEach(x => x.classList.remove('active'));
+                t.classList.add('active');
+            });
+        });
+
+        // chip filter (visual only)
+        document.querySelectorAll('.chips .chip').forEach(c => {
+            c.addEventListener('click', () => {
+                document.querySelectorAll('.chips .chip').forEach(x => x.classList.remove('active'));
+                c.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

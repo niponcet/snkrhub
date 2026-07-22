@@ -1,15 +1,63 @@
-<ion-content color="dark" [fullscreen]="true">
-  <ion-header>
-    <ion-toolbar color="dark">
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="/home"></ion-back-button>
-      </ion-buttons>
-      <ion-title>Notifications</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="snkrhub-content">
+  <div class="screen-container">
+    <div class="top-bar">
+      <div class="back-btn" [routerLink]="['/home']" title="Volver al Home">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </div>
+      <div class="top-title">Notificaciones</div>
+      <div class="top-action" (click)="markAllRead()">Marcar leídas</div>
+    </div>
 
+    <div class="screen">
+      <div class="notif-chips">
+        <div class="n-chip" [ngClass]="{'active': activeTab() === 'all'}" (click)="setTab('all')">Todas</div>
+        <div class="n-chip" [ngClass]="{'active': activeTab() === 'price'}" (click)="setTab('price')">Alertas de precio</div>
+        <div class="n-chip" [ngClass]="{'active': activeTab() === 'drops'}" (click)="setTab('drops')">Lanzamientos</div>
+        <div class="n-chip" [ngClass]="{'active': activeTab() === 'system'}" (click)="setTab('system')">Sistema</div>
+      </div>
 
-  <div class="notification-content">
-    <p>proximamente contenido de notificaciones aquí...</p>
+      @for (group of groupedNotifications(); track group.label) {
+        <div class="day-label">{{ group.label }}</div>
+
+        @for (item of group.items; track item.id) {
+          <div class="notif-card" [ngClass]="{'unread': item.unread, 'read': !item.unread}">
+            @if (item.unread) {
+              <div class="dot"></div>
+            }
+
+            <div class="n-icon" [ngClass]="item.iconType">
+              @if (item.iconType === 'up') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                  <path d="M4 15l6-6 4 4 6-8" />
+                  <path d="M20 5h-5v5" />
+                </svg>
+              } @else if (item.iconType === 'down') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                  <path d="M4 9l6 6 4-4 6 8" />
+                  <path d="M20 19h-5v-5" />
+                </svg>
+              } @else if (item.iconType === 'rel') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M8 3v4M16 3v4M3 10h18" />
+                </svg>
+              } @else if (item.iconType === 'sys') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                  <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z" />
+                </svg>
+              }
+            </div>
+
+            <div class="n-body">
+              <h4>{{ item.title }}</h4>
+              <p>{{ item.description }}</p>
+              <span class="time">{{ item.time }}</span>
+            </div>
+          </div>
+        }
+      }
+    </div>
   </div>
 </ion-content>

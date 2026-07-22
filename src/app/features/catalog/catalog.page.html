@@ -1,57 +1,41 @@
-<ion-content   [fullscreen]="true">
-  <ion-header>
-    <ion-toolbar color="dark">
-      <ion-buttons slot="end">
-        <ion-button [routerLink]="['/notifications']">
-          <ion-icon size="mid" color="tertiary" name="notifications-outline"></ion-icon>
-        </ion-button>
-        <ion-button [routerLink]="['/profile']">
-          <ion-icon size="mid" color="tertiary" name="person-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-      <ion-title>ALL SNEAKERS</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ng-container *ngIf="loading">
-    <div class="skeleton-list">
-      <div class="skeleton-item" *ngFor="let item of [1, 2, 3, 4]"></div>
+<ion-content [fullscreen]="true" class="snkrhub-content">
+  <div class="screen-container">
+    <div class="cal-header">
+      <div class="cal-month">Calendario · Julio 2026</div>
+      <div class="cal-nav">
+        <button>‹</button>
+        <button>›</button>
+      </div>
     </div>
-  </ng-container>
+    <div class="section-label" style="padding-top:10px;">Próximos drops</div>
 
-  <ion-list *ngIf="!loading" >
-    <ion-item-sliding *ngFor="let sneaker of sneakers">
-      <ion-item [routerLink]="['/sneaker-details', sneaker.id]" detail="false">
-        <ion-thumbnail slot="end">
-          <img [src]="sneaker.imagen" alt="Imagen del sneaker">
-        </ion-thumbnail>
-        <ion-card >
-          <ion-card-header>
-            <ion-card-title>{{ sneaker.modelo }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>Marca: {{ sneaker.marca }}</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-item>
-      <ion-item-options side="end">
-        <ion-item-option (click)="presentEditAlert(sneaker)">
-          <ion-icon slot="icon-only" name="create"></ion-icon>
-        </ion-item-option>
-        <ion-item-option color="danger" (click)="confirmDeleteSneaker(sneaker)">
-          <ion-icon slot="icon-only" name="trash"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-
-  <div *ngIf="cargando" style="text-align:center;">
-    <ion-spinner name="bubbles"></ion-spinner>
+    @for (group of releases(); track group.day + group.month) {
+      <div class="date-group">
+        <div class="date-chip">
+          <div class="d">{{ group.day }}</div>
+          <div class="m">{{ group.month }}</div>
+        </div>
+        <div class="release-list">
+          @for (rel of group.releases; track rel.id) {
+            <div class="release-card">
+              <div class="release-thumb" [style.background]="rel.bgColor">
+                <svg class="shoe-icon" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.85">
+                  <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13 3-4 7-6 12-6 3 0 5 2 5 5 0 4 3 7 8 8l20 5c6 2 13 5 13 12 0 4-3 6-7 6H10c-3 0-5-2-5-6z" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13" stroke="rgba(0,0,0,0.15)" stroke-width="2" fill="none"/>
+                  <circle cx="30" cy="24" r="1.6" fill="rgba(0,0,0,.25)"/>
+                  <circle cx="36" cy="20" r="1.6" fill="rgba(0,0,0,.25)"/>
+                  <circle cx="42" cy="17" r="1.6" fill="rgba(0,0,0,.25)"/>
+                </svg>
+              </div>
+              <div class="release-info">
+                <h5>{{ rel.title }}</h5>
+                <span class="brand-tag">{{ rel.brand }} · CLP {{ rel.priceCLP | number:'1.0-0' }}</span>
+              </div>
+              <span class="countdown">{{ rel.countdownDays }} DÍAS</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
   </div>
-
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" (click)="openModal()">
-    <ion-fab-button color="tertiary">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 </ion-content>

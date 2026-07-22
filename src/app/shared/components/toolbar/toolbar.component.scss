@@ -1,0 +1,108 @@
+@import "../../../../theme/variables.scss";
+
+.app-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink);
+  flex-shrink: 0;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .barcode {
+    color: var(--orange);
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  color: var(--ink-60);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+
+  &:hover, &:active {
+    color: var(--paper);
+    border-color: var(--paper);
+  }
+}
+
+.scan-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.2s;
+
+  &:hover, &:active {
+    filter: brightness(1.1);
+    transform: scale(0.96);
+  }
+}
+
+.ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-60);
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+.ticker-track {
+  display: inline-block;
+  animation: tick 25s linear infinite;
+
+  span {
+    margin-right: 22px;
+  }
+}
+
+.up {
+  color: var(--gain);
+}
+
+.down {
+  color: var(--loss);
+}
+
+@keyframes tick {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
