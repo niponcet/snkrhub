@@ -1,0 +1,22 @@
+<ion-header  [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/catalog"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del Sneaker</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content  [fullscreen]="true">
+  <ion-card  *ngIf="sneaker$ | async as sneaker">
+    <ion-card-header>
+      <ion-card-title>{{ sneaker.modelo }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <img [src]="sneaker.imagen" alt="Imagen del sneaker" />
+      <p>MARCA : {{ sneaker.marca }}</p>
+      <p>DESCRIPCION : {{ sneaker.descripcion }}</p>
+      <p>PRECIO : {{ sneaker.precio | currency }}</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

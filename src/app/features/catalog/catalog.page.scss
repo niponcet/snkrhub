@@ -1,0 +1,107 @@
+
+ion-item {
+    --min-height: 120px;
+    display: flex;
+    align-items: center; 
+  }
+  
+  ion-thumbnail {
+    width: 100px;
+    height: 100px;
+  }
+  
+  ion-card {
+    width: 100%; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    min-height: 100px; 
+    max-height: 100px;
+    padding: 1px;
+  }
+
+  ion-card-title {
+    font-size: 20px; 
+    font-weight: bold; 
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; /* Mostrar puntos suspensivos si el texto es demasiado largo */
+  }
+  
+  ion-card-header {
+    text-align: left;
+    white-space: nowrap; /* Evita que el título se extienda más allá de una línea */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Mostrar puntos suspensivos si el texto es demasiado largo */
+  }
+  
+  ion-card-content {
+    flex-grow: 1; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* Evita que el texto se extienda más allá de una línea */
+  }
+  
+  img {
+    width: 100px; 
+    height: 100px; 
+    object-fit: cover; 
+    border-radius: 8px; 
+  }
+  
+  
+
+  ion-fab {
+    bottom: calc(56px + 10px); 
+  }
+  
+  @media screen and (max-width: 768px) {
+    ion-fab {
+      bottom: calc(56px + 15px); /* Ajusta el margen en pantallas más pequeñas */
+    }
+  }
+  
+  @media screen and (min-width: 769px) {
+    ion-fab {
+      bottom: calc(64px + 20px); /* Ajusta el margen en pantallas más grandes */
+    }
+  }
+  
+
+
+
+  /* Contenedor de la lista de skeleton loaders */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.skeleton-item {
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  height: 80px;
+  margin-bottom: 16px;
+  width: 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Animación de shimmer para el skeleton loader */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton-item::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to right, #e0e0e0 0%, #f6f6f6 50%, #e0e0e0 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

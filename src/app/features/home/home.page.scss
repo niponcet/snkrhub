@@ -1,0 +1,12 @@
+.image-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh; /* Ocupa toda la altura de la ventana */
+  overflow: hidden; /* Evita el scroll vertical */
+
+  ion-img {
+    flex: 1; 
+    width: 100%; /* Asegura que las imágenes ocupen el ancho completo */
+    object-fit: cover; /* Ajusta la imagen para que no se distorsione */
+  }
+}

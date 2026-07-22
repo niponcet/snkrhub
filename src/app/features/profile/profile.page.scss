@@ -1,0 +1,84 @@
+.account-card {
+  margin: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para darle relieve */
+}
+
+.account-header {
+  text-align: center;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.account-header ion-button {
+  font-size: 18px;
+  color: #fff;
+}
+
+.account-text {
+  font-size: 16px;
+  color: #ccc;
+  margin-top: 10px;
+}
+
+.account-text a {
+  color: #ffffff; /* Color para el enlace */
+  text-decoration: underline;
+}
+
+.welcome-message {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-top: 20px;
+}
+
+/* Responsividad */
+@media (max-width: 576px) {
+  .account-card {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .account-header ion-button {
+    font-size: 16px;
+  }
+
+  .account-text {
+    font-size: 14px;
+  }
+
+  .welcome-message {
+    font-size: 16px;
+  }
+  
+  .logout-container {
+    margin-top: 15px;
+  }
+}
+
+
+ion-footer {
+  position: relative; /* Asegúrate de que esté en la posición relativa */
+  background-color: transparent; /* Asegúrate de que el fondo no cubra el tab bar */
+  padding-bottom: 16px; /* Espacio debajo para que no se superpongan */
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center; /* Centrar verticalmente */
+  gap: 15px; /* Espacio entre iconos */
+  width: 100%; /* Asegurarse de que ocupe todo el ancho */
+}
+
+ion-icon {
+  font-size: 24px; /* Tamaño de los iconos */
+  color: #747474; /* Color de los iconos */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el icono */
+}
+
+ion-icon:hover {
+  color: #a300c4; /* Cambia color al pasar el mouse */
+}

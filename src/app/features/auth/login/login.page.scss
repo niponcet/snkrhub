@@ -1,0 +1,103 @@
+
+
+/* Contenedor de la tarjeta de inicio de sesión */
+ion-card {
+  background-color: #ccdcf577;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 200px;
+  border-radius: 12px; 
+   
+}
+
+/* Ajuste del botón de ingreso */
+.submit-button {
+  margin-top: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  
+}
+
+/* Ajustes para ion-item y alineación de iconos */
+ion-item {
+  margin-bottom: 5px; 
+  border-radius: 12px;
+  align-items: center;
+}
+
+.icon-login {
+  font-size: 20px; 
+  color: rgb(0, 0, 0); 
+  margin-right: 0px; 
+  align-self: center; 
+}
+
+/* Contenedor del texto y botón de registro */
+.register-container {
+  margin-top: 16px;
+  text-align: center;
+  
+}
+
+.register-text {
+  font-size: 14px;
+  color:rgb(0, 0, 0);
+}
+
+.register-text a {
+  color: rgb(0, 59, 185);
+  font-weight: bold;
+  text-decoration: none; 
+}
+
+.register-text a:hover {
+  text-decoration: underline;
+}
+
+
+ion-content {
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+
+
+@media (max-width: 576px) {
+  .submit-button {
+      font-size: 14px;
+  }
+  
+  .register-text {
+      font-size: 12px;
+  }
+}
+
+@media (min-width: 577px) {
+  .submit-button {
+      font-size: 16px;
+  }
+  
+  .register-text {
+      font-size: 14px;
+  }
+}
+
+
+/* estilo de mensaje de bienvienida */
+.welcome-message {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 20px;
+  color: green; 
+  opacity: 0; 
+  transition: opacity 0.5s ease; 
+  visibility: hidden;
+}
+/* asegurar que se haga visible al iniciar*/
+.welcome-message.show {
+  opacity: 1; 
+  visibility: visible; 
+}

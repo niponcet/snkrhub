@@ -1,0 +1,21 @@
+<ion-tab-bar color="dark" slot="bottom">
+  <ion-tab-button [routerLink]="'/home'" [ngClass]="{'tab-selected': router.url === '/home'}">
+    <ion-icon name="home"></ion-icon>
+    <ion-label>Home</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button [routerLink]="'/catalog'" [ngClass]="{'tab-selected': router.url === '/catalog'}">
+    <ion-icon name="shirt"></ion-icon>
+    <ion-label>Catalog</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button [routerLink]="'/favorite'" [ngClass]="{'tab-selected': router.url === '/favorite'}">
+    <ion-icon name="heart"></ion-icon>
+    <ion-label>Favorites</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button [routerLink]="'/inventory'" [ngClass]="{'tab-selected': router.url === '/inventory'}">
+    <ion-icon name="cart"></ion-icon>
+    <ion-label>Inventory</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>

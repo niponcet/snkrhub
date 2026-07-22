@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Sneaker</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="dismiss()">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label position="floating">Model:</ion-label>
+    <ion-input [(ngModel)]="newSneaker.modelo"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Marca:</ion-label>
+    <ion-select [(ngModel)]="newSneaker.marca" placeholder="Selecciona una marca">
+      <ion-select-option value="Nike">Nike</ion-select-option>
+      <ion-select-option value="Jordan">Jordan</ion-select-option>
+      <ion-select-option value="Adidas">Adidas</ion-select-option>
+      <ion-select-option value="Puma">Puma</ion-select-option>
+      <ion-select-option value="Reebok">Reebok</ion-select-option>
+      <ion-select-option value="Vans">Vans</ion-select-option>
+      <ion-select-option value="Osiris">Osiris</ion-select-option>
+     
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Description</ion-label>
+    <ion-textarea [(ngModel)]="newSneaker.descripcion"></ion-textarea>
+  </ion-item>
+
+  <!-- Campo para la URL de la imagen -->
+  <ion-item>
+    <ion-label position="floating">Price</ion-label>
+    <ion-input [(ngModel)]="newSneaker.precio" type="number"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Image URL</ion-label>
+    <ion-input [(ngModel)]="newSneaker.imagen"></ion-input>
+  </ion-item>
+
+  
+  <ion-button color="tertiary" expand="full" (click)="saveSneaker()">Save</ion-button>
+</ion-content>

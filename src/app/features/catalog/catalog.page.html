@@ -1,0 +1,57 @@
+<ion-content   [fullscreen]="true">
+  <ion-header>
+    <ion-toolbar color="dark">
+      <ion-buttons slot="end">
+        <ion-button [routerLink]="['/notifications']">
+          <ion-icon size="mid" color="tertiary" name="notifications-outline"></ion-icon>
+        </ion-button>
+        <ion-button [routerLink]="['/profile']">
+          <ion-icon size="mid" color="tertiary" name="person-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>ALL SNEAKERS</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ng-container *ngIf="loading">
+    <div class="skeleton-list">
+      <div class="skeleton-item" *ngFor="let item of [1, 2, 3, 4]"></div>
+    </div>
+  </ng-container>
+
+  <ion-list *ngIf="!loading" >
+    <ion-item-sliding *ngFor="let sneaker of sneakers">
+      <ion-item [routerLink]="['/sneaker-details', sneaker.id]" detail="false">
+        <ion-thumbnail slot="end">
+          <img [src]="sneaker.imagen" alt="Imagen del sneaker">
+        </ion-thumbnail>
+        <ion-card >
+          <ion-card-header>
+            <ion-card-title>{{ sneaker.modelo }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Marca: {{ sneaker.marca }}</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option (click)="presentEditAlert(sneaker)">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="confirmDeleteSneaker(sneaker)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <div *ngIf="cargando" style="text-align:center;">
+    <ion-spinner name="bubbles"></ion-spinner>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" (click)="openModal()">
+    <ion-fab-button color="tertiary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

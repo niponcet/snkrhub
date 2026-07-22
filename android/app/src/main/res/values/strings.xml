@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">snkrhub</string>
+    <string name="title_activity_main">snkrhub</string>
+    <string name="package_name">com.snkrhub.app</string>
+    <string name="custom_url_scheme">com.snkrhub.app</string>
+</resources>

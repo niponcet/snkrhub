@@ -1,0 +1,27 @@
+// For information on how to create your own theme, please see:
+// http://ionicframework.com/docs/theming/
+/* Temas claros */
+/* Temas claros */
+:root {
+    --ion-color-primary: #3880ff;
+    --ion-color-primary-rgb: 56,128,255;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255,255,255;
+    --ion-color-primary-shade: #3171e0;
+    --ion-color-primary-tint: #4c8dff;
+  
+    --background-color: #ffffff;
+    --text-color: #000000;
+  }
+  
+  /* Temas oscuros */
+  :root[theme='dark'] {
+    --ion-color-primary: #4d89f9;
+    --ion-color-primary-rgb: 77,137,249;
+    --ion-color-primary-contrast: #ffffff;
+}
+
+/* Cambiar el color de fondo del botón activo */
+
+/* Estilos globales */
+
