@@ -1,13 +1,3 @@
 <ion-app>
-  @if (shouldShowHeader()) {
-    <header class="global-app-header">
-      <app-toolbar></app-toolbar>
-    </header>
-  }
   <ion-router-outlet></ion-router-outlet>
-  @if (shouldShowTabs()) {
-    <footer class="global-app-footer">
-      <app-tabs></app-tabs>
-    </footer>
-  }
 </ion-app>

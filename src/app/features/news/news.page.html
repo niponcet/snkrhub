@@ -1,0 +1,30 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="snkrhub-toolbar">
+    <ion-title>Sneaker News</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="snkrhub-content">
+  <div class="screen-container">
+    <div class="section-label">Todas las Noticias</div>
+    
+    <div class="news-list">
+      @for (item of apiService.news(); track item.title; let last = $last) {
+        <div class="news-card" [style.border-bottom]="last ? 'none' : ''" (click)="openNewsDetail(item)" style="cursor: pointer;">
+          <div class="news-thumb" [style.background-image]="'url(' + item.imageUrl + ')'" style="background-position: center; background-size: cover; background-repeat: no-repeat;">
+          </div>
+          <div class="news-body">
+            <span class="tag">{{ item.source | uppercase }}</span>
+            <h4>{{ item.title }}</h4>
+            <span class="meta">{{ item.date | date:'shortDate' }}</span>
+          </div>
+        </div>
+      }
+      @if (apiService.news().length === 0) {
+        <div style="text-align: center; padding: 20px; color: #888;">
+          Cargando noticias...
+        </div>
+      }
+    </div>
+  </div>
+</ion-content>

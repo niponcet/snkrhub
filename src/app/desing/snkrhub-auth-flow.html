@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnkrHub — Auth Flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #131316;
+            --panel: #1c1c21;
+            --panel-2: #232329;
+            --paper: #ede6d6;
+            --orange: #ff5a1f;
+            --gain: #3ecf8e;
+            --loss: #ff4d5e;
+            --ink-90: rgba(237, 230, 214, .92);
+            --ink-60: rgba(237, 230, 214, .58);
+            --ink-40: rgba(237, 230, 214, .34);
+            --line: rgba(237, 230, 214, .10);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0a0a0c;
+            min-height: 100vh;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 26px;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 16px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .note {
+            max-width: 390px;
+            margin: 0 auto 14px;
+            color: #7a7a82;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .04em;
+            text-align: center;
+        }
+
+        .phone {
+            width: 390px;
+            height: 844px;
+            background: var(--ink);
+            border-radius: 44px;
+            border: 10px solid #000;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 255, 255, .03);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            color: var(--ink-90);
+        }
+
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 26px;
+            background: #000;
+            border-radius: 0 0 16px 16px;
+            z-index: 50;
+        }
+
+        .barcode {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+        }
+
+        .barcode span {
+            display: block;
+            width: 2px;
+            background: currentColor;
+        }
+
+        .screen {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ===== WELCOME ===== */
+        .welcome-hero {
+            height: 52%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(120% 90% at 50% 20%, #2a1a10 0%, #131316 65%);
+            overflow: hidden;
+        }
+
+        .bg-bars {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            opacity: .14;
+        }
+
+        .bg-bars span {
+            display: block;
+            width: 3px;
+            background: var(--orange);
+        }
+
+        .hero-logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 30px;
+            color: var(--paper);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2;
+        }
+
+        .hero-logo .barcode {
+            color: var(--orange);
+            height: 22px;
+        }
+
+        .hero-logo .barcode span {
+            width: 3px;
+        }
+
+        .hero-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-60);
+            letter-spacing: .06em;
+            margin-top: 10px;
+            z-index: 2;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .welcome-body {
+            padding: 26px 24px;
+        }
+
+        .welcome-body h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 22px;
+            line-height: 1.25;
+            margin-bottom: 8px;
+        }
+
+        .welcome-body p {
+            font-size: 13px;
+            color: var(--ink-60);
+            line-height: 1.5;
+            margin-bottom: 26px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--orange);
+            color: #1a0a02;
+            border: none;
+            border-radius: 14px;
+            padding: 15px 0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .03em;
+            margin-bottom: 10px;
+        }
+
+        .btn-outline {
+            width: 100%;
+            background: transparent;
+            color: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 15px 0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .03em;
+        }
+
+        .btn-google {
+            width: 100%;
+            background: var(--panel);
+            color: var(--ink-90);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 13px 0;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .divider .l {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .divider span {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+            color: var(--ink-40);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        /* ===== FORM SCREENS ===== */
+        .form-top {
+            padding: 26px 24px 8px;
+        }
+
+        .form-top .back {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-90);
+            margin-bottom: 22px;
+        }
+
+        .form-top h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .form-top p {
+            font-size: 12.5px;
+            color: var(--ink-60);
+            line-height: 1.5;
+        }
+
+        .form-body {
+            padding: 20px 24px;
+        }
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+        .field label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--ink-40);
+            margin-bottom: 6px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap svg.li {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink-40);
+        }
+
+        .input-wrap input {
+            width: 100%;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            padding: 12px 12px 12px 38px;
+            color: var(--ink-90);
+            font-family: 'Inter';
+            font-size: 13px;
+            outline: none;
+        }
+
+        .input-wrap input::placeholder {
+            color: var(--ink-40);
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--orange);
+        }
+
+        .input-wrap .eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink-40);
+        }
+
+        .strength {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .strength span {
+            flex: 1;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--line);
+        }
+
+        .strength span.on {
+            background: var(--gain);
+        }
+
+        .forgot-link {
+            text-align: right;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            color: var(--orange);
+            margin-bottom: 20px;
+            margin-top: -4px;
+        }
+
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 1.5px solid var(--line);
+            background: var(--panel);
+            flex-shrink: 0;
+            margin-top: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox.checked {
+            background: var(--orange);
+            border-color: var(--orange);
+        }
+
+        .terms p {
+            font-size: 11.5px;
+            color: var(--ink-60);
+            line-height: 1.5;
+        }
+
+        .terms a {
+            color: var(--orange);
+        }
+
+        .switch-line {
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--ink-60);
+            margin-top: 18px;
+        }
+
+        .switch-line a {
+            color: var(--orange);
+            font-weight: 600;
+        }
+
+        /* forgot password success */
+        .success-wrap {
+            padding: 60px 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(62, 207, 142, .14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gain);
+            margin-bottom: 20px;
+        }
+
+        .success-wrap h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .success-wrap p {
+            font-size: 12.5px;
+            color: var(--ink-60);
+            line-height: 1.55;
+            margin-bottom: 4px;
+        }
+
+        .success-wrap .email {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--paper);
+            font-weight: 600;
+        }
+
+        .divider-ticket {
+            height: 16px;
+            margin: 24px 24px 0;
+            background: repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px);
+            opacity: .6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== WELCOME ===== -->
+    <div class="col">
+        <div class="note">1 · WELCOME</div>
+        <div class="phone">
+            <div class="notch"></div>
+            <div class="welcome-hero">
+                <div class="bg-bars" id="bgBars"></div>
+                <div class="hero-logo">
+                    SNKRHUB
+                    <svg class="barcode" viewBox="0 0 24 20" width="24" height="20">
+                        <g fill="currentColor">
+                            <rect x="0" width="1.6" height="20" />
+                            <rect x="3" width="1" height="20" />
+                            <rect x="5.5" width="2.2" height="20" />
+                            <rect x="9" width="1" height="20" />
+                            <rect x="11.5" width="1.6" height="20" />
+                            <rect x="14.5" width="1" height="20" />
+                            <rect x="17" width="2.2" height="20" />
+                            <rect x="21" width="1" height="20" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="hero-tag">TU COLECCIÓN. TU PORTAFOLIO.</div>
+            </div>
+            <div class="welcome-body">
+                <h1>Guarda, sigue y valoriza cada par que tienes.</h1>
+                <p>Crea tu cuenta para sincronizar tu inventario, activar alertas de precio y no perderte ningún
+                    lanzamiento.</p>
+                <button class="btn-google">
+                    <svg width="16" height="16" viewBox="0 0 24 24">
+                        <path fill="#EA4335"
+                            d="M12 10.2v3.9h5.5c-.24 1.3-1.7 3.8-5.5 3.8-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.1.8 3.9 1.5l2.7-2.6C16.9 3.2 14.7 2.2 12 2.2 6.9 2.2 2.7 6.4 2.7 11.5S6.9 20.8 12 20.8c6.9 0 9.6-4.8 9.6-7.3 0-.5-.05-.9-.13-1.3H12z" />
+                    </svg>
+                    Continuar con Google
+                </button>
+                <div class="divider">
+                    <div class="l"></div><span>o</span>
+                    <div class="l"></div>
+                </div>
+                <button class="btn-primary">Crear cuenta</button>
+                <button class="btn-outline">Iniciar sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SIGN UP ===== -->
+    <div class="col">
+        <div class="note">2 · CREAR CUENTA</div>
+        <div class="phone">
+            <div class="notch"></div>
+            <div class="screen">
+                <div class="form-top">
+                    <div class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg></div>
+                    <h1>Crea tu cuenta</h1>
+                    <p>Guarda tu colección y activa alertas de precio.</p>
+                </div>
+                <div class="form-body">
+                    <div class="field">
+                        <label>Nombre</label>
+                        <div class="input-wrap">
+                            <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="8" r="4" />
+                                <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
+                            </svg>
+                            <input type="text" placeholder="Nicolás Martínez">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Email</label>
+                        <div class="input-wrap">
+                            <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                <path d="M2 6l10 7 10-7" />
+                            </svg>
+                            <input type="text" placeholder="tucorreo@ejemplo.com">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Contraseña</label>
+                        <div class="input-wrap">
+                            <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="4" y="10" width="16" height="10" rx="2" />
+                                <path d="M8 10V7a4 4 0 018 0v3" />
+                            </svg>
+                            <input type="password" placeholder="Mínimo 8 caracteres">
+                            <svg class="eye" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </div>
+                        <div class="strength"><span class="on"></span><span class="on"></span><span
+                                class="on"></span><span></span></div>
+                    </div>
+                    <div class="terms">
+                        <div class="checkbox checked"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+                                stroke="#1a0a02" stroke-width="3">
+                                <path d="M20 6L9 17l-5-5" />
+                            </svg></div>
+                        <p>Acepto los <a>Términos de uso</a> y la <a>Política de privacidad</a> de SnkrHub.</p>
+                    </div>
+                    <button class="btn-primary">Crear cuenta</button>
+                    <div class="switch-line">¿Ya tienes cuenta? <a>Inicia sesión</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SIGN IN ===== -->
+    <div class="col">
+        <div class="note">3 · INICIAR SESIÓN</div>
+        <div class="phone">
+            <div class="notch"></div>
+            <div class="screen">
+                <div class="form-top">
+                    <div class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg></div>
+                    <h1>Bienvenido de vuelta</h1>
+                    <p>Ingresa para ver tu colección y alertas.</p>
+                </div>
+                <div class="form-body">
+                    <button class="btn-google">
+                        <svg width="16" height="16" viewBox="0 0 24 24">
+                            <path fill="#EA4335"
+                                d="M12 10.2v3.9h5.5c-.24 1.3-1.7 3.8-5.5 3.8-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.1.8 3.9 1.5l2.7-2.6C16.9 3.2 14.7 2.2 12 2.2 6.9 2.2 2.7 6.4 2.7 11.5S6.9 20.8 12 20.8c6.9 0 9.6-4.8 9.6-7.3 0-.5-.05-.9-.13-1.3H12z" />
+                        </svg>
+                        Continuar con Google
+                    </button>
+                    <div class="divider">
+                        <div class="l"></div><span>o</span>
+                        <div class="l"></div>
+                    </div>
+
+                    <div class="field">
+                        <label>Email</label>
+                        <div class="input-wrap">
+                            <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                <path d="M2 6l10 7 10-7" />
+                            </svg>
+                            <input type="text" placeholder="tucorreo@ejemplo.com">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Contraseña</label>
+                        <div class="input-wrap">
+                            <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="4" y="10" width="16" height="10" rx="2" />
+                                <path d="M8 10V7a4 4 0 018 0v3" />
+                            </svg>
+                            <input type="password" placeholder="••••••••">
+                            <svg class="eye" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="forgot-link">¿Olvidaste tu contraseña?</div>
+                    <button class="btn-primary">Iniciar sesión</button>
+                    <div class="switch-line">¿No tienes cuenta? <a>Regístrate</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FORGOT PASSWORD ===== -->
+    <div class="col">
+        <div class="note">4 · RECUPERAR CONTRASEÑA</div>
+        <div class="phone">
+            <div class="notch"></div>
+            <div class="screen">
+                <div class="form-top">
+                    <div class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg></div>
+                    <h1>Recupera tu acceso</h1>
+                    <p>Te enviaremos un link para restablecer tu contraseña.</p>
+                </div>
+                <div class="form-body">
+                    <div class="field">
+                        <label>Email</label>
+                        <div class="input-wrap">
+                            <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                <path d="M2 6l10 7 10-7" />
+                            </svg>
+                            <input type="text" placeholder="tucorreo@ejemplo.com">
+                        </div>
+                    </div>
+                    <button class="btn-primary">Enviar link de recuperación</button>
+                    <div class="switch-line">¿Recordaste tu contraseña? <a>Inicia sesión</a></div>
+                </div>
+
+                <div class="divider-ticket"></div>
+
+                <div class="success-wrap">
+                    <div class="success-icon">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.4">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                    </div>
+                    <h1>Revisa tu correo</h1>
+                    <p>Enviamos un link de recuperación a</p>
+                    <p class="email">tucorreo@ejemplo.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bars = document.getElementById('bgBars');
+        let h = '';
+        for (let i = 0; i < 26; i++) {
+            const height = 40 + Math.random() * 70;
+            h += `<span style="height:${height}%"></span>`;
+        }
+        bars.innerHTML = h;
+    </script>
+</body>
+
+</html>

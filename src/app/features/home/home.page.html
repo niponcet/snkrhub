@@ -3,16 +3,16 @@
     <div class="section-label">Últimos lanzamientos y noticias</div>
     
     <div class="carousel">
-      @for (slide of slides; track slide.title; let i = $index) {
-        <div class="slide {{ slide.styleClass }}" [ngClass]="{'active': currentSlide() === i}">
-          <span class="tag">{{ slide.tag }}</span>
+      @for (slide of featuredNews(); track slide.title; let i = $index) {
+        <div class="slide s{{ i + 1 }}" [ngClass]="{'active': currentSlide() === i}" (click)="openNewsDetail(slide)" [style.background-image]="'url(' + slide.imageUrl + ')'" style="background-position: center; background-size: cover; background-repeat: no-repeat;">
+          <span class="tag">{{ slide.source | uppercase }}</span>
           <h3>{{ slide.title }}</h3>
         </div>
       }
     </div>
 
     <div class="dots">
-      @for (slide of slides; track slide.title; let i = $index) {
+      @for (slide of featuredNews(); track slide.title; let i = $index) {
         <div class="dot" [ngClass]="{'active': currentSlide() === i}" (click)="setSlide(i)"></div>
       }
     </div>
@@ -20,22 +20,21 @@
     <div class="divider-ticket" style="margin-top:16px;"></div>
 
     <div class="news-list">
-      @for (item of newsFeed; track item.title; let last = $last) {
-        <div class="news-card" [style.border-bottom]="last ? 'none' : ''">
-          <div class="news-thumb" [style.background]="item.bgColor">
-            <svg class="shoe-icon" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.85">
-              <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13 3-4 7-6 12-6 3 0 5 2 5 5 0 4 3 7 8 8l20 5c6 2 13 5 13 12 0 4-3 6-7 6H10c-3 0-5-2-5-6z" fill="rgba(255,255,255,0.9)"/>
-              <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13" stroke="rgba(0,0,0,0.15)" stroke-width="2" fill="none"/>
-              <circle cx="30" cy="24" r="1.6" fill="rgba(0,0,0,.25)"/>
-              <circle cx="36" cy="20" r="1.6" fill="rgba(0,0,0,.25)"/>
-              <circle cx="42" cy="17" r="1.6" fill="rgba(0,0,0,.25)"/>
-            </svg>
+      @for (item of apiService.news().slice(0, 5); track item.title; let last = $last) {
+        <div class="news-card" [style.border-bottom]="last ? 'none' : ''" (click)="openNewsDetail(item)" style="cursor: pointer;">
+          <div class="news-thumb" [style.background-image]="'url(' + item.imageUrl + ')'" style="background-position: center; background-size: cover; background-repeat: no-repeat;">
+            <!-- Eliminamos el SVG estático para mostrar la imagen real -->
           </div>
           <div class="news-body">
-            <span class="tag">{{ item.tag }}</span>
+            <span class="tag">{{ item.source | uppercase }}</span>
             <h4>{{ item.title }}</h4>
-            <span class="meta">{{ item.meta }}</span>
+            <span class="meta">{{ item.date | date:'shortDate' }}</span>
           </div>
+        </div>
+      }
+      @if (apiService.news().length === 0) {
+        <div style="text-align: center; padding: 20px; color: #888;">
+          Cargando noticias...
         </div>
       }
     </div>

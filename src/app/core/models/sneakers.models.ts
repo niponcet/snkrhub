@@ -22,6 +22,16 @@ export interface SneakerI {
   imagen?: string;
 }
 
+export interface ReleaseI {
+  id: string;
+  sneakerName: string;
+  brand: string;
+  releaseDate: string; // ISO o similar
+  price: number;
+  imageUrl: string;
+}
+
+
 export interface ReleaseItemI {
   id: string;
   title: string;
@@ -46,3 +56,13 @@ export interface HistoricalSneakerI {
   bgColor: string;
   brand: string;
 }
+
+export interface NewsI {
+  id: string;
+  title: string;
+  summary: string;
+  source: string;
+  date: string;
+  imageUrl: string;
+  articleUrl: string;
+}

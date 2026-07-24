@@ -1,41 +1,51 @@
 <ion-content [fullscreen]="true" class="snkrhub-content">
   <div class="screen-container">
-    <div class="cal-header">
-      <div class="cal-month">Calendario · Julio 2026</div>
-      <div class="cal-nav">
-        <button>‹</button>
-        <button>›</button>
-      </div>
-    </div>
-    <div class="section-label" style="padding-top:10px;">Próximos drops</div>
+    <div class="section-label" style="padding: 20px 20px 10px; font-size: 16px; font-weight: 800; color: #fff;">UPCOMING DROPS</div>
 
-    @for (group of releases(); track group.day + group.month) {
-      <div class="date-group">
-        <div class="date-chip">
-          <div class="d">{{ group.day }}</div>
-          <div class="m">{{ group.month }}</div>
-        </div>
-        <div class="release-list">
-          @for (rel of group.releases; track rel.id) {
-            <div class="release-card">
-              <div class="release-thumb" [style.background]="rel.bgColor">
-                <svg class="shoe-icon" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.85">
-                  <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13 3-4 7-6 12-6 3 0 5 2 5 5 0 4 3 7 8 8l20 5c6 2 13 5 13 12 0 4-3 6-7 6H10c-3 0-5-2-5-6z" fill="rgba(255,255,255,0.9)"/>
-                  <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13" stroke="rgba(0,0,0,0.15)" stroke-width="2" fill="none"/>
-                  <circle cx="30" cy="24" r="1.6" fill="rgba(0,0,0,.25)"/>
-                  <circle cx="36" cy="20" r="1.6" fill="rgba(0,0,0,.25)"/>
-                  <circle cx="42" cy="17" r="1.6" fill="rgba(0,0,0,.25)"/>
-                </svg>
-              </div>
-              <div class="release-info">
-                <h5>{{ rel.title }}</h5>
-                <span class="brand-tag">{{ rel.brand }} · CLP {{ rel.priceCLP | number:'1.0-0' }}</span>
-              </div>
-              <span class="countdown">{{ rel.countdownDays }} DÍAS</span>
+    <div class="filter-container" style="display: flex; gap: 10px; align-items: center; margin-bottom: 16px; padding: 0 20px;">
+      <ion-button id="open-date-modal" fill="outline" color="light" style="flex: 1;">
+        <ion-icon name="calendar-outline" slot="start"></ion-icon>
+        {{ selectedDate() ? (selectedDate() | date:'dd MMM yyyy') : 'Filtrar por fecha' }}
+      </ion-button>
+    
+      @if (selectedDate()) {
+        <ion-button fill="clear" color="danger" (click)="clearDateFilter()">
+          <ion-icon name="close-circle-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      }
+    </div>
+
+    <ion-modal trigger="open-date-modal" [keepContentsMounted]="true" initialBreakpoint="0.65" [breakpoints]="[0, 0.65, 1]">
+      <ng-template>
+        <ion-datetime 
+          presentation="date" 
+          [value]="selectedDate()"
+          showDefaultButtons="true"
+          doneText="Confirmar"
+          cancelText="Cancelar"
+          (ionChange)="onDateChange($event)">
+        </ion-datetime>
+      </ng-template>
+    </ion-modal>
+
+    <div class="premium-list">
+      @for (rel of filteredDrops(); track rel.id) {
+        <div class="premium-card">
+          <div class="image-wrapper">
+            <img [src]="rel.imageUrl" (error)="rel.imageUrl = 'https://placehold.co/600x400/1a1a1a/ff5722.png?text=Image+Not+Found'" style="width: 100%; height: 100%; object-fit: cover;" />
+            <div class="date-badge">
+              {{ rel.releaseDate | date:'dd MMM' | uppercase }}
             </div>
-          }
+          </div>
+          <div class="card-body">
+            <h4 class="sneaker-title">{{ rel.sneakerName }}</h4>
+            <p class="brand-name">{{ rel.brand }}</p>
+            <div class="footer-row">
+              <span class="retail-price">Retail: ${{ rel.price }}</span>
+            </div>
+          </div>
         </div>
-      </div>
-    }
+      }
+    </div>
   </div>
 </ion-content>

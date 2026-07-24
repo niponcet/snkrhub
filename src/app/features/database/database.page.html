@@ -1,16 +1,15 @@
 <ion-content [fullscreen]="true" class="snkrhub-content">
   <div class="screen-container">
-    <div class="search-wrap">
-      <div class="search-bar">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8a8a92" stroke-width="2.2">
-          <circle cx="11" cy="11" r="7" />
-          <path d="M21 21l-4.3-4.3" />
-        </svg>
-        <input type="text" placeholder="Buscar modelo, marca o SKU…" [value]="searchTerm()" (input)="onSearchChange($event)">
-      </div>
+    <div class="search-wrap" style="padding: 16px;">
+      <ion-searchbar 
+        debounce="600" 
+        placeholder="Buscar por silueta, SKU o colorway..." 
+        (ionInput)="onSearch($event)"
+        mode="ios">
+      </ion-searchbar>
     </div>
 
-    <div class="chips">
+    <div class="chips" style="padding: 0 16px; margin-bottom: 16px; overflow-x: auto; display: flex; gap: 8px;">
       @for (brand of brands(); track brand) {
         <div class="chip" [ngClass]="{'active': activeBrand() === brand}" (click)="setBrand(brand)">
           {{ brand }}
@@ -18,43 +17,44 @@
       }
     </div>
 
-    <div class="section-label" style="padding-top:0;">Base de datos · Históricos</div>
+    <div class="section-label" style="padding: 0 16px 16px;">Resultados de Búsqueda</div>
 
-    <div class="db-list">
-      @for (item of filteredSneakers(); track item.id; let last = $last) {
-        <div class="db-card" [style.border-bottom]="last ? 'none' : ''">
-          <div class="db-thumb" [style.background]="item.bgColor">
-            <svg class="shoe-icon" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.85">
-              <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13 3-4 7-6 12-6 3 0 5 2 5 5 0 4 3 7 8 8l20 5c6 2 13 5 13 12 0 4-3 6-7 6H10c-3 0-5-2-5-6z" fill="rgba(255,255,255,0.9)"/>
-              <path d="M5 42c0-6 6-9 13-11 8-2 14-6 19-13" stroke="rgba(0,0,0,0.15)" stroke-width="2" fill="none"/>
-              <circle cx="30" cy="24" r="1.6" fill="rgba(0,0,0,.25)"/>
-              <circle cx="36" cy="20" r="1.6" fill="rgba(0,0,0,.25)"/>
-              <circle cx="42" cy="17" r="1.6" fill="rgba(0,0,0,.25)"/>
-            </svg>
+    @if (isLoading()) {
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px;">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <div>
+            <ion-skeleton-text animated style="width: 100%; height: 140px; border-radius: 12px; margin-bottom: 8px;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 80%; height: 16px; margin-bottom: 4px;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 50%; height: 14px;"></ion-skeleton-text>
           </div>
-          <div class="db-body">
-            <h4>{{ item.title }}</h4>
-            <p>{{ item.description }}</p>
-            <div class="db-foot">
-              <div class="spark">
-                <span style="height:5px"></span>
-                <span style="height:8px"></span>
-                <span [ngClass]="{'up': item.trend === 'up'}" style="height:10px"></span>
-                <span [ngClass]="{'up': item.trend === 'up'}" style="height:13px"></span>
-                <span [ngClass]="{'up': item.trend === 'up'}" style="height:16px"></span>
-              </div>
-              <span class="price-tag" [style.color]="item.trend === 'up' ? 'var(--gain)' : 'var(--loss)'">
-                CLP {{ item.priceCLP | number:'1.0-0' }} {{ item.trend === 'up' ? '↑' : '↓' }}
-              </span>
+        }
+      </div>
+    }
+
+    @if (!isLoading() && apiService.searchResults().length > 0) {
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 24px;">
+        @for (item of apiService.searchResults(); track item.id) {
+          <div style="background: var(--ink-20); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="height: 120px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              <img [src]="item.imageUrl" (error)="item.imageUrl = 'https://placehold.co/600x400/1a1a1a/ff5722.png?text=Image+Not+Found'" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <div style="padding: 12px;">
+              <div style="font-size: 10px; color: var(--ink-40); font-family: var(--font-mono); margin-bottom: 4px;">{{ item.brand | uppercase }}</div>
+              <div style="font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 8px; line-height: 1.2;">{{ item.sneakerName }}</div>
+              <div style="font-size: 14px; font-weight: 800; color: var(--orange);">${{ item.price }}</div>
             </div>
           </div>
+        }
+      </div>
+    }
+
+    @if (!isLoading() && apiService.searchResults().length === 0) {
+      <div style="padding: 48px 20px; text-align: center;">
+        <ion-icon name="search-outline" style="font-size: 48px; color: var(--ink-40); margin-bottom: 16px;"></ion-icon>
+        <div style="color: var(--ink-40); font-family: var(--font-mono); font-size: 14px;">
+          No se encontraron resultados
         </div>
-      }
-      @if (filteredSneakers().length === 0) {
-        <div style="padding: 32px 20px; text-align: center; color: var(--ink-40); font-family: var(--font-mono); font-size: 12px;">
-          No se encontraron resultados en la base de datos para "{{ searchTerm() }}".
-        </div>
-      }
-    </div>
+      </div>
+    }
   </div>
 </ion-content>

@@ -1,0 +1,74 @@
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <div class="form-top">
+    <div class="back" (click)="goBack()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+    </div>
+    <h1>Crea tu cuenta</h1>
+    <p>Guarda tu colección y activa alertas de precio.</p>
+  </div>
+  
+  <div class="form-body">
+    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+      
+      <div class="field">
+        <label>Nombre</label>
+        <div class="input-wrap">
+          <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
+          </svg>
+          <input type="text" formControlName="name" placeholder="Nicolás Martínez">
+        </div>
+      </div>
+      
+      <div class="field">
+        <label>Email</label>
+        <div class="input-wrap">
+          <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="M2 6l10 7 10-7" />
+          </svg>
+          <input type="email" formControlName="email" placeholder="tucorreo@ejemplo.com">
+        </div>
+      </div>
+      
+      <div class="field">
+        <label>Contraseña</label>
+        <div class="input-wrap">
+          <svg class="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="10" width="16" height="10" rx="2" />
+            <path d="M8 10V7a4 4 0 018 0v3" />
+          </svg>
+          <input [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="Mínimo 8 caracteres">
+          <svg class="eye" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" (click)="togglePassword()">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </div>
+        <div class="strength">
+          <span [class.on]="signUpForm.get('password')?.value?.length > 0"></span>
+          <span [class.on]="signUpForm.get('password')?.value?.length >= 4"></span>
+          <span [class.on]="signUpForm.get('password')?.value?.length >= 8"></span>
+          <span [class.on]="signUpForm.get('password')?.valid"></span>
+        </div>
+      </div>
+      
+      <div class="terms" (click)="toggleTerms()">
+        <div class="checkbox" [class.checked]="signUpForm.get('terms')?.value">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1a0a02" stroke-width="3">
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        </div>
+        <p>Acepto los <a>Términos de uso</a> y la <a>Política de privacidad</a> de SnkrHub.</p>
+      </div>
+      
+      <button class="btn-primary" type="submit" [disabled]="signUpForm.invalid || isLoading()">
+        {{ isLoading() ? 'Cargando...' : 'Crear cuenta' }}
+      </button>
+      
+      <div class="switch-line">¿Ya tienes cuenta? <a (click)="goToSignIn()">Inicia sesión</a></div>
+    </form>
+  </div>
+</ion-content>

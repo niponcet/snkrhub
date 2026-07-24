@@ -1,0 +1,105 @@
+.welcome-hero {
+  height: 52vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 90% at 50% 20%, #2a1a10 0%, #131316 65%);
+  overflow: hidden;
+}
+
+.bg-bars {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  opacity: .14;
+}
+
+.bg-bars span {
+  display: block;
+  width: 3px;
+  background: var(--orange);
+}
+
+.hero-logo {
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--paper);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+}
+
+.hero-logo .barcode {
+  color: var(--orange);
+  height: 22px;
+}
+
+.hero-logo .barcode span {
+  width: 3px;
+}
+
+.hero-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-60);
+  letter-spacing: .06em;
+  margin-top: 10px;
+  z-index: 2;
+  text-align: center;
+  padding: 0 40px;
+}
+
+.welcome-body {
+  padding: 26px 24px;
+}
+
+.welcome-body h1 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.25;
+  margin-bottom: 8px;
+  margin-top: 0;
+  color: var(--ink-90);
+}
+
+.welcome-body p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-60);
+  line-height: 1.5;
+  margin-bottom: 26px;
+}
+
+.btn-primary {
+  width: 100%;
+  background: var(--orange);
+  color: #1a0a02;
+  border: none;
+  border-radius: 14px;
+  padding: 15px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  margin-bottom: 10px;
+}
+
+.btn-outline {
+  width: 100%;
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 15px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
+}

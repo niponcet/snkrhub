@@ -1,0 +1,38 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="snkrhub-toolbar">
+    <ion-title>Noticia</ion-title>
+    <ion-buttons slot="end">
+      <div class="close-btn" (click)="close()" title="Cerrar modal" style="margin-right: 16px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </div>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="snkrhub-content">
+  <div class="modal-cover" [style.background-image]="'url(' + news.imageUrl + ')'" style="background-position: center; background-size: cover; background-repeat: no-repeat;"></div>
+  
+  <div class="modal-body">
+    <div class="meta-container">
+      <span class="badge">{{ news.source | uppercase }}</span>
+      <span class="date">{{ news.date | date:'mediumDate' }}</span>
+    </div>
+    
+    <h2 class="title">{{ news.title }}</h2>
+    
+    <div class="summary">
+      <p>{{ news.summary }}</p>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border snkrhub-footer">
+  <ion-toolbar class="snkrhub-toolbar">
+    <ion-button expand="block" class="neon-btn" (click)="openExternal()">
+      Leer artículo completo en {{ news.source }}
+      <ion-icon slot="end" name="open-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
